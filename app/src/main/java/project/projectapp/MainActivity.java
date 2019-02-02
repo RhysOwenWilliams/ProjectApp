@@ -102,15 +102,6 @@ public class MainActivity extends AppCompatActivity
         getUserDetails();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -169,5 +160,25 @@ public class MainActivity extends AppCompatActivity
         userUsername.setText("Welcome " + user + "!");
 
         Glide.with(this).load(firebaseUser.getPhotoUrl()).into(userProfileImage);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * Used to reload the user details when activity is resumed, used for when a user changes their
+     * details in the profile activity
+     */
+    @Override
+    public void onResume() {
+        getUserDetails();
+        super.onResume();
     }
 }

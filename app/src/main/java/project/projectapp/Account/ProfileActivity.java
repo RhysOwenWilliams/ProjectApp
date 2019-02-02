@@ -3,12 +3,14 @@ package project.projectapp.Account;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +24,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.Resource;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
@@ -36,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
     private final String CHANGE_USERNAME = "Change Username";
     private final String CHANGE_PASSWORD = "Change Password";
 
+    private Button saveButton;
     private CircleImageView profileIcon, editImage;
     private TextView listText;
     private ListView options;
@@ -48,6 +56,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private StorageReference storageReference;
+
+    private Uri changedUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +71,25 @@ public class ProfileActivity extends AppCompatActivity {
         profileIcon = findViewById(R.id.profile_details_profile_icon);
         editImage = findViewById(R.id.profile_details_edit_image);
         options = findViewById(R.id.profile_details_options);
-
+        saveButton = findViewById(R.id.profile_save_button);
 
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editProfileImage();
+                openGallery();
             }
         });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //editProfileImage(firebaseAuth.getCurrentUser());
+            }
+        });
+
+        storageReference = FirebaseStorage.getInstance()
+                .getReference()
+                .child("user_profile_images");
 
         toolbar = findViewById(R.id.team_details_toolbar);
         setSupportActionBar(toolbar);
@@ -83,8 +105,46 @@ public class ProfileActivity extends AppCompatActivity {
         setUserDetails();
     }
 
-    private void editProfileImage() {
-        Toast.makeText(ProfileActivity.this, "Edit Image", Toast.LENGTH_SHORT).show();
+    private void openGallery(){
+        Intent gallery = new Intent(Intent.ACTION_GET_CONTENT);
+        gallery.setType("image/*");
+        startActivityForResult(gallery, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
+            changedUri = data.getData();
+            profileIcon.setImageURI(changedUri);
+            editProfileImage(firebaseAuth.getCurrentUser());
+        }
+    }
+
+    /**
+     * Allows the user to change their profile image
+     */
+    private void editProfileImage(final FirebaseUser user) {
+        final StorageReference imagePath = storageReference.child(changedUri.getLastPathSegment());
+        imagePath.putFile(changedUri).addOnSuccessListener(
+                new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        imagePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                UserProfileChangeRequest changeRequest = new UserProfileChangeRequest.Builder()
+                                        .setPhotoUri(uri)
+                                        .build();
+
+                                user.updateProfile(changeRequest);
+
+                                Log.d("profilechange", changedUri.toString());
+                            }
+                        });
+                    }
+                });
     }
 
     /**
