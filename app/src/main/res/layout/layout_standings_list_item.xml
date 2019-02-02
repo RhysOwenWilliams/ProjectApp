@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:id="@+id/standings_parent_layout">
+
+    <TextView
+        android:id="@+id/text_view_position_standings"
+        android:layout_width="16dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:gravity="center"
+        android:text="10"/>
+
+    <ImageView
+        android:id="@+id/image_view_standings"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/cardiff_city_2nds"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/text_view_position_standings"
+        android:background="@android:color/transparent"/>
+
+    <TextView
+        android:layout_width="161dp"
+        android:layout_height="wrap_content"
+        android:text="Cardiff City 2nds"
+        android:id="@+id/text_view_team_name_standings"
+        android:layout_toRightOf="@+id/image_view_standings"
+        android:textColor="@color/colorPrimary"
+        android:layout_centerVertical="true"
+        android:textSize="10sp" />
+
+    <View
+        android:id="@+id/view_standings"
+        android:layout_width="1dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="200dp"
+        android:background="#b5b3b2" />
+
+    <LinearLayout
+        android:layout_marginLeft="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:layout_centerVertical="true">
+        <TextView
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:text="10"
+            android:id="@+id/text_view_wins_standings"
+            android:textColor="@color/colorPrimary"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10"
+            android:id="@+id/text_view_losses_standings"
+            android:textColor="@color/colorPrimary"
+            android:layout_centerVertical="true"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.500"
+            android:id="@+id/text_view_win_percentage_standings"
+            android:textColor="@color/colorPrimary"
+            android:layout_centerVertical="true"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50"
+            android:id="@+id/text_view_win_total_points_standings"
+            android:textColor="@color/colorPrimary"
+            android:layout_centerVertical="true"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:gravity="center"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/image_view_standings"
+        android:background="#b5b3b2" />
+
+
+</RelativeLayout>

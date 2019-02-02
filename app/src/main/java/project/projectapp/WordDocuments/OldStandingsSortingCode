@@ -1,0 +1,25 @@
+    /**
+     * Retrieves the list of teams and their total points and sorts them by the value of the points.
+     * If points are equal, then checks name in alphabetical order.
+     * @param map the HashMap for the teams and their points
+     * @return sorted standings order
+     */
+    private <K,V extends Comparable<? super V>> void entriesSortedByValues(Map<K,V> map) {
+        SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<>(
+                new Comparator<Map.Entry<K,V>>() {
+                    @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+                        if(e1.getValue() != e2.getValue()){
+                            int res = e2.getValue().compareTo(e1.getValue());
+                            return res != 0 ? res : 1;
+                        } else {
+                            int res = e1.getKey().toString().compareTo(e2.toString());
+                            return res != 0 ? res : 1;
+                        }
+                    }
+                }
+        );
+        sortedEntries.addAll(map.entrySet());
+        for(Map.Entry<K, V> myMap : sortedEntries){
+            //Log.d("standings", myMap.getKey() + " : " + myMap.getValue());
+        }
+    }

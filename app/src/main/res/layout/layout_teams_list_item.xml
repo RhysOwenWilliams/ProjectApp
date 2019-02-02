@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:id="@+id/teams_parent_layout">
+
+    <ImageView
+        android:id="@+id/image_view_teams"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/cardiff_city_2nds"
+        android:layout_marginLeft="10dp"
+        android:layout_margin="10dp"
+        android:background="@android:color/transparent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cardiff City 2nds"
+        android:id="@+id/text_view_team_name_teams"
+        android:layout_toRightOf="@+id/image_view_teams"
+        android:textColor="@color/colorPrimary"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:textSize="20sp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/image_view_teams"
+        android:background="#b5b3b2" />
+
+
+</RelativeLayout>

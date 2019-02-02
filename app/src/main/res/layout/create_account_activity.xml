@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Click the icon to select a profile image"
+                android:gravity="center"
+                android:textSize="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circle_image_view_select_profile_image"
+                android:layout_width="450dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/profileicon" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/edit_text_email_address"
+                android:background="@android:color/transparent"
+                android:padding="16dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:drawablePadding="12dp"
+                android:hint="Email Address"
+                android:textColor="#030303"
+                android:drawableLeft="@drawable/ic_person_outline_black_24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#030303"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/edit_text_username"
+                android:background="@android:color/transparent"
+                android:padding="14dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:drawablePadding="12dp"
+                android:hint="Username"
+                android:textColor="#030303"
+                android:drawableLeft="@drawable/ic_person_outline_black_24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#030303"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/edit_text_password"
+                android:drawablePadding="11dp"
+                android:padding="14dp"
+                android:hint="Password"
+                android:background="@android:color/transparent"
+                android:maxLines="1"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="10dp"
+                android:drawableLeft="@drawable/ic_lock_outline_black_24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#030303"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/edit_text_password_check"
+                android:drawablePadding="11dp"
+                android:padding="14dp"
+                android:hint="Re-enter Password"
+                android:background="@android:color/transparent"
+                android:maxLines="1"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="10dp"
+                android:drawableLeft="@drawable/ic_lock_outline_black_24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#030303"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+
+            <Button
+                android:id="@+id/create_new_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Create Account"
+                android:clickable="true"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/text_view_already_has_account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#030303"
+                    android:padding="16dp"
+                    android:text="Already have an account?"
+                    android:textSize="12dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginBottom="16dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#030303"
+                    android:padding="16dp"
+                    android:text="Forgot Password?"
+                    android:textSize="12dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginBottom="16dp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

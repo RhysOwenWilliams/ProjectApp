@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "331749185153",
+    "firebase_url": "https://swbaapplication.firebaseio.com",
+    "project_id": "swbaapplication",
+    "storage_bucket": "swbaapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331749185153:android:a91f6d2a11ce4fc4",
+        "android_client_info": {
+          "package_name": "project.projectapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331749185153-ail51slolt21vf1sbtqq844ku86tnqai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKEn6WtqmgP_LMtZzsjZ5nIBx6g8uNdDE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
