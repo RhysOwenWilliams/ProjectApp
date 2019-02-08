@@ -1,5 +1,7 @@
 package project.projectapp.NewsFragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import project.projectapp.NewNewsArticleActivity;
 import project.projectapp.R;
 
 public class TeamNewsTabFragment extends Fragment {
@@ -70,7 +73,7 @@ public class TeamNewsTabFragment extends Fragment {
                         addNewsArticle.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(getActivity(), "Opening Activity", Toast.LENGTH_SHORT).show();
+                                openNewNewsArticleActivity();
                             }
                         });
                     }
@@ -80,5 +83,12 @@ public class TeamNewsTabFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
 
+    }
+
+    private void openNewNewsArticleActivity() {
+        Intent newArticle = new Intent(getActivity(), NewNewsArticleActivity.class);
+        startActivity(newArticle);
+        ((Activity) getContext()).overridePendingTransition(R.anim.slide_in_from_bottom,
+                R.anim.slide_out_from_bottom);
     }
 }

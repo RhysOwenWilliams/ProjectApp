@@ -52,6 +52,9 @@
             android:name=".TeamsFragment.TeamDetailsMapsLocation">
         </activity>
         <activity
+            android:name=".NewNewsArticleActivity">
+        </activity>
+        <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
