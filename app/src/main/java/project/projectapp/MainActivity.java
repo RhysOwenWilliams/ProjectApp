@@ -1,9 +1,6 @@
 package project.projectapp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -13,11 +10,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,11 +23,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.net.URI;
-
 import project.projectapp.Account.LoginActivity;
 import project.projectapp.Account.ProfileActivity;
 import project.projectapp.Account.SettingsActivity;
+import project.projectapp.NewsFragment.NewsFragment;
 import project.projectapp.StandingsFragment.StandingsFragment;
 import project.projectapp.TeamsFragment.TeamsFragment;
 
@@ -47,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     private TextView userEmailAddress;
     private TextView userUsername;
     private ImageView userProfileImage;
+    private ProgressBar progressBar;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -95,6 +92,7 @@ public class MainActivity extends AppCompatActivity
         userEmailAddress = view.findViewById(R.id.signedInUserEmailAddress);
         userUsername = view.findViewById(R.id.signedInUserUsername);
         userProfileImage = view.findViewById(R.id.profile_icon_drawer);
+        progressBar = view.findViewById(R.id.profile_icon_progress_bar);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();

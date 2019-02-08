@@ -155,24 +155,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             return;
         }
 
-        // Queries the database for username's so we can check if it is already taken
-        Query query = FirebaseDatabase.getInstance().getReference().child("Users")
-                .orderByChild("username")
-                .equalTo(newUsername);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getChildrenCount()>0) {
-                    username.setError("Username already taken");
-                    username.requestFocus();
-                } else {
-                    createNewAccount(newEmailAddress, newUsername, newPassword, newPasswordCheck);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+        createNewAccount(newEmailAddress, newUsername, newPassword, newPasswordCheck);
 
     }
 

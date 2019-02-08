@@ -1,5 +1,7 @@
 package project.projectapp.Account;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
@@ -7,18 +9,23 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +35,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -43,10 +55,11 @@ public class ProfileActivity extends AppCompatActivity {
     private final String CHANGE_USERNAME = "Change Username";
     private final String CHANGE_PASSWORD = "Change Password";
 
-    private Button saveButton;
     private CircleImageView profileIcon, editImage;
+    private EditText newUsername;
     private TextView listText;
     private ListView options;
+    private ProgressBar progressBar;
     private Toolbar toolbar;
 
     private String user;
@@ -71,19 +84,11 @@ public class ProfileActivity extends AppCompatActivity {
         profileIcon = findViewById(R.id.profile_details_profile_icon);
         editImage = findViewById(R.id.profile_details_edit_image);
         options = findViewById(R.id.profile_details_options);
-        saveButton = findViewById(R.id.profile_save_button);
-
+        progressBar = findViewById(R.id.profile_details_progress_bar);
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openGallery();
-            }
-        });
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //editProfileImage(firebaseAuth.getCurrentUser());
             }
         });
 
@@ -126,6 +131,10 @@ public class ProfileActivity extends AppCompatActivity {
      * Allows the user to change their profile image
      */
     private void editProfileImage(final FirebaseUser user) {
+        Toast.makeText(ProfileActivity.this, "Changing image, this may take a while...", Toast.LENGTH_SHORT).show();
+        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.VISIBLE);
+        profileIcon.setVisibility(View.INVISIBLE);
         final StorageReference imagePath = storageReference.child(changedUri.getLastPathSegment());
         imagePath.putFile(changedUri).addOnSuccessListener(
                 new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -134,13 +143,17 @@ public class ProfileActivity extends AppCompatActivity {
                         imagePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                UserProfileChangeRequest changeRequest = new UserProfileChangeRequest.Builder()
+                                UserProfileChangeRequest changeRequest
+                                        = new UserProfileChangeRequest.Builder()
                                         .setPhotoUri(uri)
                                         .build();
 
                                 user.updateProfile(changeRequest);
-
-                                Log.d("profilechange", changedUri.toString());
+                                Toast.makeText(ProfileActivity.this,
+                                        "Profile Image Successfully changed",
+                                        Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.INVISIBLE);
+                                profileIcon.setVisibility(View.VISIBLE);
                             }
                         });
                     }
@@ -173,9 +186,46 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = (String) parent.getItemAtPosition(position);
-                Toast.makeText(ProfileActivity.this, item, Toast.LENGTH_SHORT).show();
+
+                if(item == CHANGE_USERNAME){
+                    Toast.makeText(ProfileActivity.this, item, Toast.LENGTH_SHORT).show();
+                    editUsername(firebaseAuth.getCurrentUser());
+                } else if(item == CHANGE_PASSWORD){
+                    Toast.makeText(ProfileActivity.this, item, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    /**
+     * Loads an alert dialog to let the user change their username
+     * @param user - the current user
+     */
+    private void editUsername(final FirebaseUser user) {
+        View view = LayoutInflater.from(ProfileActivity.this)
+                .inflate(R.layout.alert_dialog_change_username, null);
+
+        AlertDialog.Builder changeUsername = new AlertDialog.Builder(ProfileActivity.this);
+        changeUsername.setView(view);
+
+        newUsername = view.findViewById(R.id.alert_dialog_new_username);
+
+        changeUsername.setCancelable(true)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                UserProfileChangeRequest changeRequest
+                        = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(newUsername.getText().toString())
+                        .build();
+
+                user.updateProfile(changeRequest);
+                Toast.makeText(ProfileActivity.this,
+                        "Username Successfully Changed!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        Dialog dialog = changeUsername.create();
+        dialog.show();
     }
 
     private void addOptionsToList() {
@@ -209,7 +259,14 @@ public class ProfileActivity extends AppCompatActivity {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
+            toMainActivity();
             super.onBackPressed();
         }
+    }
+
+    private void toMainActivity() {
+        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_anim_right, R.anim.slide_out_anim_left);
     }
 }

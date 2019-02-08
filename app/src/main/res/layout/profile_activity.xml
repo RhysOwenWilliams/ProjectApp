@@ -49,6 +49,13 @@
             app:civ_circle_background_color="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/profile_details_progress_bar"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:padding="90dp"
+            android:visibility="invisible"/>
     </android.support.constraint.ConstraintLayout>
 
     <View
@@ -93,13 +100,11 @@
             android:layout_height="1dp"
             android:background="#c1bfbe" />
 
-        <Button
-            android:id="@+id/profile_save_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:text="Save"
-            android:textColor="@color/colorAccent" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:background="#d6d4d3" />
+
     </LinearLayout>
 
 </LinearLayout>
