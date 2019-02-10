@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/new_news_article_toolbar"
@@ -12,6 +13,74 @@
         app:layout_scrollFlags="scroll|enterAlways"
         app:popupTheme="@style/AppTheme.PopupOverlay"
         app:title="Create Article"
-        app:titleTextColor="@android:color/white"/>
+        app:titleTextColor="@android:color/white">
 
-</android.support.constraint.ConstraintLayout>
+        <ImageView
+            android:id="@+id/new_news_article_send"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="right"
+            android:adjustViewBounds="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ic_send_black_24dp"
+            android:clickable="true"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/new_news_article_profile_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/profileicon"
+            app:civ_border_color="@color/colorPrimaryDark"
+            app:civ_border_width="1dp" />
+
+        <TextView
+            android:id="@+id/new_news_article_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:text="Username" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#c1bfbe" />
+
+    <EditText
+        android:id="@+id/new_news_article_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="Title for your article"
+        android:padding="10dp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#c1bfbe" />
+
+    <EditText
+        android:id="@+id/new_news_article_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="Text content for your article"
+        android:gravity="top"
+        android:padding="10dp"
+        android:inputType="textMultiLine"/>
+
+</LinearLayout>

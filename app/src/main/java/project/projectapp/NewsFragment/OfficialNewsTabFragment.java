@@ -87,6 +87,7 @@ public class OfficialNewsTabFragment extends Fragment {
 
     private void openNewNewsArticleActivity() {
         Intent newArticle = new Intent(getActivity(), NewNewsArticleActivity.class);
+        newArticle.putExtra("activity", "Official News");
         startActivity(newArticle);
         ((Activity) getContext()).overridePendingTransition(R.anim.slide_in_from_bottom,
                 R.anim.slide_out_from_bottom);
