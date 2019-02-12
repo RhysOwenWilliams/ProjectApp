@@ -72,19 +72,6 @@ public class StandingsFragment extends Fragment {
     private void addAllTeamStandingsData(View view){
         final View VIEW = view;
 
-      //  teamLogo.add(R.drawable.barry_huskies_2nds);
-       // teamLogo.add(R.drawable.beddau_knights);
-        //teamLogo.add(R.drawable.cssc_swansea_storm_2nds);
-        //teamLogo.add(R.drawable.caerphilly_cobras);
-        //teamLogo.add(R.drawable.cardiff_city_2nds);
-        //teamLogo.add(R.drawable.cardiff_met_archers_2nds);
-        //teamLogo.add(R.drawable.cougars_2nds);
-        //teamLogo.add(R.drawable.crickhowell_bulldogs);
-        //teamLogo.add(R.drawable.newport_fury_2nds);
-        //teamLogo.add(R.drawable.port_talbot_spartans);
-        //teamLogo.add(R.drawable.south_wales_police);
-        //teamLogo.add(R.drawable.uwtsd_owls);
-
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Teams");
         databaseReference.addValueEventListener(new ValueEventListener() {

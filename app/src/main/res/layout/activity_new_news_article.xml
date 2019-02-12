@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:hint="Title for your article"
-        android:padding="10dp"
+        android:layout_margin="15dp"
         android:textStyle="bold" />
 
     <View
@@ -78,9 +78,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:hint="Text content for your article"
+        android:hint="Details for your article"
         android:gravity="top"
-        android:padding="10dp"
+        android:layout_margin="15dp"
         android:inputType="textMultiLine"/>
 
 </LinearLayout>

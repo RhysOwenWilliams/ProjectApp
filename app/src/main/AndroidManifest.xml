@@ -52,7 +52,7 @@
             android:name=".TeamsFragment.TeamDetailsMapsLocation">
         </activity>
         <activity
-            android:name=".NewNewsArticleActivity">
+            android:name=".NewsFragment.NewNewsArticleActivity">
         </activity>
         <activity
             android:name=".SplashActivity"

@@ -1,10 +1,8 @@
-package project.projectapp;
+package project.projectapp.NewsFragment;
 
 import android.net.Uri;
 
 public class NewsPost {
-
-    private String id;
     private String title;
     private String content;
     private String username;
@@ -12,9 +10,8 @@ public class NewsPost {
     private String date;
     private String time;
 
-    public NewsPost(String id, String title, String content, String username, String profileImage,
+    public NewsPost(String title, String content, String username, String profileImage,
                     String date, String time) {
-        this.id = id;
         this.title = title;
         this.content = content;
         this.username = username;
@@ -25,14 +22,6 @@ public class NewsPost {
 
     public NewsPost(){
 
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getTitle() {

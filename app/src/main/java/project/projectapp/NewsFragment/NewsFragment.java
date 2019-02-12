@@ -25,10 +25,10 @@ public class NewsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_fragment, container, false);
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.news_view_pager);
+        ViewPager viewPager = view.findViewById(R.id.news_view_pager);
         setupViewPager(viewPager);
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) view.findViewById(R.id.news_tab_layout);
+        TabLayout tabs = view.findViewById(R.id.news_tab_layout);
         tabs.setupWithViewPager(viewPager);
 
         return view;

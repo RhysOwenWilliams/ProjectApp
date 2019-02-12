@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:id="@+id/news_article_parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/news_article_layout_profile_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_person_outline_black_24dp"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/news_article_layout_poster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:text="username"
+                android:textSize="18dp"
+                android:layout_toRightOf="@id/news_article_layout_profile_image"/>
+
+            <TextView
+                android:id="@+id/news_article_layout_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="time of post"
+                android:layout_alignParentRight="true"/>
+
+            <TextView
+                android:id="@+id/news_article_layout_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="date of post"
+                android:layout_below="@id/news_article_layout_time"
+                android:layout_alignParentRight="true"/>
+
+            <TextView
+                android:id="@+id/news_article_layout_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title for the post"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/news_article_layout_profile_image"
+                android:textSize="20dp"
+                android:textStyle="bold"/>
+
+            <View
+                android:id="@+id/news_article_view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#b5b3b2"
+                android:layout_below="@id/news_article_layout_title"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:id="@+id/news_article_layout_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/news_article_view"
+                android:maxLines="4"
+                android:ellipsize="end"
+                android:text="bdfhfbryevfuroyvbreuowyvburewbvyryurtewbvyutbwevuytbwvyutbvwuybtybvwytbwruogbtywrvbuytrwbvutwryvbutybvitwbtyuwrovytwbrvoutbvytuyrwvbutywrbvyutbrwvutyb"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

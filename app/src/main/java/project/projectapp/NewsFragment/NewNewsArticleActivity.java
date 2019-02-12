@@ -1,20 +1,16 @@
-package project.projectapp;
+package project.projectapp.NewsFragment;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,8 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import project.projectapp.R;
 
-import java.util.Date;
 import java.util.Calendar;
 
 
@@ -119,7 +115,7 @@ public class NewNewsArticleActivity extends AppCompatActivity {
 
         String postId = databaseReference.push().getKey();
 
-        NewsPost newsPost = new NewsPost(postId, newArticleTitle, newArticleContent,
+        NewsPost newsPost = new NewsPost(newArticleTitle, newArticleContent,
                 newArticlePosterUsername, newArticlePosterProfileImage, dayDate, dayTime);
 
         databaseReference.child(postId).setValue(newsPost);
@@ -130,7 +126,7 @@ public class NewNewsArticleActivity extends AppCompatActivity {
 
     /**
      * Retrieves a long string containing the current date, time and year, then splits this data
-     * up into separate strings 
+     * up into separate strings
      */
     private void getDateTime() {
         String todayDateTime = String.valueOf(Calendar.getInstance().getTime());
@@ -138,7 +134,7 @@ public class NewNewsArticleActivity extends AppCompatActivity {
         // Calendar.getInstance().getTime() returns a long string of various data for today, split and access what we need
         String[] splitTime = todayDateTime.split(" ");
 
-        dayDate = splitTime[0] + " " + splitTime[1] + " " + splitTime[2] + splitTime[5];
+        dayDate = splitTime[0] + " " + splitTime[1] + " " + splitTime[2] + " " + splitTime[5];
         dayTime = splitTime[3];
     }
 

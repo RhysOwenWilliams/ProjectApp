@@ -40,6 +40,7 @@ public class StandingsRecyclerViewAdapter extends RecyclerView.Adapter<Standings
         teamWinPercentages = winPercentage;
         teamLogo = logo;
         teamTotalPoints = totalPoints;
+
     }
 
     @NonNull
@@ -71,8 +72,7 @@ public class StandingsRecyclerViewAdapter extends RecyclerView.Adapter<Standings
         holder.winPercentage.setText(teamWinPercentages.get(position));
         holder.totalPoints.setText(teamTotalPoints.get(position));
 
-        Glide
-                .with(context)
+        Glide.with(context)
                 .load(teamLogo.get(position))
                 .apply(new RequestOptions().override(200, 200))
                 .into(holder.logo);
