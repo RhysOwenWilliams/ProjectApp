@@ -93,6 +93,7 @@
             android:layout_weight="1"
             android:gravity="center"/>
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

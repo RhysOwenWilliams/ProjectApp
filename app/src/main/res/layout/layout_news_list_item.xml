@@ -21,6 +21,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_person_outline_black_24dp"
+                android:scaleType="centerCrop"
                 app:civ_border_width="1dp"
                 app:civ_border_color="@color/colorPrimary"/>
 
@@ -74,8 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/news_article_view"
                 android:maxLines="4"
-                android:ellipsize="end"
-                android:text="bdfhfbryevfuroyvbreuowyvburewbvyryurtewbvyutbwevuytbwvyutbvwuybtybvwytbwruogbtywrvbuytrwbvutwryvbutybvitwbtyuwrovytwbrvoutbvytuyrwvbutywrbvyutbrwvutyb"/>
+                android:ellipsize="end"/>
 
         </RelativeLayout>
 

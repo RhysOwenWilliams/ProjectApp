@@ -31,6 +31,8 @@ import project.projectapp.StandingsFragment.StandingsRecyclerViewAdapter;
 
 public class OfficialNewsTabFragment extends Fragment {
 
+    private final String ALLOW_COMMA = "@%$%@$#%";
+
     private FloatingActionButton addNewsArticle;
     private ProgressBar progressBar;
 
@@ -87,7 +89,6 @@ public class OfficialNewsTabFragment extends Fragment {
                 usernames.clear();
 
                 for(DataSnapshot data : dataSnapshot.getChildren()){
-
                     String postDetails = data.getValue().toString();
                     getPostDetails(postDetails);
 
@@ -132,6 +133,7 @@ public class OfficialNewsTabFragment extends Fragment {
         postTitle = structureContent(splitPost[3]);
         postContent = structureContent(splitPost[4]);
         profileUsername = structureContent(splitPost[5]);
+        postContent = postContent.replace(ALLOW_COMMA,",");
     }
 
     /**

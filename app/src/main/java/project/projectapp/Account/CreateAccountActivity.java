@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -152,6 +154,12 @@ public class CreateAccountActivity extends AppCompatActivity {
         if(newPassword.length() < 6){
             password.setError("Password must be longer than 6 characters");
             password.requestFocus();
+            return;
+        }
+        //TODO: might need to check against some more characters, double check at some point
+        if(newUsername.contains("\",</?>;:'|[]{}+=)(*&^%$#@!~`#\\\\//|\"")){
+            username.setError("Illegal character, please select another username");
+            username.requestFocus();
             return;
         }
 

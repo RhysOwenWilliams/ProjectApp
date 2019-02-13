@@ -3,13 +3,15 @@ package project.projectapp.NewsFragment;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -44,7 +46,7 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Glide.with(context)
                 .load(images.get(position))
                 .into(holder.profileImage);
@@ -54,6 +56,17 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
         holder.postTime.setText(times.get(position));
         holder.postTitle.setText(titles.get(position));
         holder.postContent.setText(contents.get(position));
+        holder.postContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Used to open and close the text
+                if(holder.postContent.getMaxLines() == 4){
+                    holder.postContent.setMaxLines(Integer.MAX_VALUE);
+                } else {
+                    holder.postContent.setMaxLines(4);
+                }
+            }
+        });
     }
 
     @Override

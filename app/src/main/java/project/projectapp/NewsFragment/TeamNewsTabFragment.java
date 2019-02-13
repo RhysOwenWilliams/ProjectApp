@@ -28,6 +28,8 @@ import project.projectapp.R;
 
 public class TeamNewsTabFragment extends Fragment {
 
+    private final String ALLOW_COMMA = "@%$%@$#%";
+
     private FloatingActionButton addNewsArticle;
     private ProgressBar progressBar;
 
@@ -116,6 +118,7 @@ public class TeamNewsTabFragment extends Fragment {
         postTitle = structureContent(splitPost[3]);
         postContent = structureContent(splitPost[4]);
         profileUsername = structureContent(splitPost[5]);
+        postContent = postContent.replace(ALLOW_COMMA,",");
     }
 
     /**

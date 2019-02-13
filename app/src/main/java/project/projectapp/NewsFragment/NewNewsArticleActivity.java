@@ -77,6 +77,7 @@ public class NewNewsArticleActivity extends AppCompatActivity {
     private void createArticle() {
         newArticleTitle = articleTitle.getText().toString();
         newArticleContent = articleContent.getText().toString();
+        newArticleContent = newArticleContent.replace(",", "@%$%@$#%");
         newArticlePosterUsername = firebaseAuth.getCurrentUser().getDisplayName();
 
         userImage = firebaseAuth.getCurrentUser().getPhotoUrl();
