@@ -135,7 +135,7 @@ public class NewNewsArticleActivity extends AppCompatActivity {
         // Calendar.getInstance().getTime() returns a long string of various data for today, split and access what we need
         String[] splitTime = todayDateTime.split(" ");
 
-        dayDate = splitTime[0] + " " + splitTime[1] + " " + splitTime[2] + " " + splitTime[5];
+        dayDate = splitTime[1] + " " + splitTime[2] + " " + splitTime[5]; // Month, Day, Year
         dayTime = splitTime[3];
     }
 

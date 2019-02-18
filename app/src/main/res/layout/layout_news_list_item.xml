@@ -40,7 +40,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="time of post"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:textSize="10dp"/>
 
             <TextView
                 android:id="@+id/news_article_layout_date"
@@ -48,7 +49,8 @@
                 android:layout_height="wrap_content"
                 android:text="date of post"
                 android:layout_below="@id/news_article_layout_time"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:textSize="10dp"/>
 
             <TextView
                 android:id="@+id/news_article_layout_title"

@@ -40,7 +40,6 @@ public class StandingsRecyclerViewAdapter extends RecyclerView.Adapter<Standings
         teamWinPercentages = winPercentage;
         teamLogo = logo;
         teamTotalPoints = totalPoints;
-
     }
 
     @NonNull
@@ -76,6 +75,9 @@ public class StandingsRecyclerViewAdapter extends RecyclerView.Adapter<Standings
                 .load(teamLogo.get(position))
                 .apply(new RequestOptions().override(200, 200))
                 .into(holder.logo);
+
+        // Removes the click animation since it appears like the click should do something otherwide
+        holder.parentLayout.setClickable(false);
     }
 
     @Override

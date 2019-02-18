@@ -164,7 +164,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
 
         createNewAccount(newEmailAddress, newUsername, newPassword, newPasswordCheck);
-
     }
 
     private void userSignUp(View v){
@@ -177,7 +176,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     private void createNewAccount(String newEmailAddress, final String newUsername,
                                   String newPassword, String newPasswordCheck){
         if(TextUtils.equals(newPassword, newPasswordCheck)){
-            progressDialog.setMessage("Checking details, please wait...");
+            progressDialog.setMessage("Checking details, this may take a while...");
             progressDialog.show();
             firebaseAuth.createUserWithEmailAndPassword(newEmailAddress, newPassword)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -192,10 +191,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                                         "Registration failed", Toast.LENGTH_SHORT).show();
                             } else {
                                 createProfileImage(newUsername, firebaseAuth.getCurrentUser());
-                                finish();
-                                toMainActivity();
                             }
-                            progressDialog.hide();
                         }
                     });
         } else {
@@ -219,7 +215,16 @@ public class CreateAccountActivity extends AppCompatActivity {
                                     .setDisplayName(newUsername)
                                     .build();
 
-                            user.updateProfile(changeRequest);
+                            // Requires a complete listener because the method is asynchronous
+                            user.updateProfile(changeRequest)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    finish();
+                                    toMainActivity();
+                                    progressDialog.hide();
+                                }
+                            });
                         }
                     });
             }

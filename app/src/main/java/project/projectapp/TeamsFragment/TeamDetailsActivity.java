@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +29,7 @@ public class TeamDetailsActivity extends AppCompatActivity {
     private static final String TEAM_KIT_COLOUR = "teamKitColour";
     private static final String TEAM_LOCATION_LATITUDE = "teamLocationLatitude";
     private static final String TEAM_LOCATION_LONGITUDE = "teamLocationLongitude";
+    private static final String TEAM_LOGO = "teamLogo";
 
     private Button viewLocation;
     private ImageView logo;
@@ -37,8 +39,8 @@ public class TeamDetailsActivity extends AppCompatActivity {
 
     private String retrievedTeamName, retrievedTeamWins, retrievedTeamLosses,
             retrievedTeamContactName, retrievedTeamContactEmailAddress, retrievedTeamAddress,
-            retrievedTeamLocationLatitude, retrievedTeamLocationLongitude, retrievedTeamKitColour;
-    private int teamLogo;
+            retrievedTeamLocationLatitude, retrievedTeamLocationLongitude, retrievedTeamKitColour,
+            retrievedTeamLogo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,7 +92,7 @@ public class TeamDetailsActivity extends AppCompatActivity {
         retrievedTeamLocationLatitude = getIntent().getStringExtra(TEAM_LOCATION_LATITUDE);
         retrievedTeamLocationLongitude = getIntent().getStringExtra(TEAM_LOCATION_LONGITUDE);
         retrievedTeamKitColour = getIntent().getStringExtra(TEAM_KIT_COLOUR);
-
+        //retrievedTeamLogo = getIntent().getStringExtra(TEAM_LOGO);
         setDisplayData();
     }
 
