@@ -25,14 +25,13 @@ import project.projectapp.R;
 public class StandingsRecyclerViewAdapter extends RecyclerView.Adapter<StandingsRecyclerViewAdapter.ViewHolder>{
 
     private ArrayList<String> teamNames, teamWins, teamLosses, teamWinPercentages, teamTotalPoints,
-            teamStandingsLocation;
-    private ArrayList<Drawable> teamLogo;
+            teamStandingsLocation, teamLogo;
 
     private Context context;
 
     public StandingsRecyclerViewAdapter(Context thisContext, ArrayList<String> names, ArrayList<String> wins,
                                         ArrayList<String> losses, ArrayList<String> winPercentage,
-                                        ArrayList<Drawable> logo, ArrayList<String> totalPoints) {
+                                        ArrayList<String> logo, ArrayList<String> totalPoints) {
         context = thisContext;
         teamNames = names;
         teamWins = wins;
@@ -73,7 +72,6 @@ public class StandingsRecyclerViewAdapter extends RecyclerView.Adapter<Standings
 
         Glide.with(context)
                 .load(teamLogo.get(position))
-                .apply(new RequestOptions().override(200, 200))
                 .into(holder.logo);
 
         // Removes the click animation since it appears like the click should do something otherwide

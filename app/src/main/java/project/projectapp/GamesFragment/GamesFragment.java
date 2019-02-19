@@ -39,7 +39,7 @@ public class GamesFragment extends Fragment {
 
     private String team1, team2, gameDate, gameTime, gameType, gameLocation, team1Score, team2Score;
 
-    private ArrayList<String> gameDates, gameTimes, gameTypes, gameLocations,team1Nicknames,
+    private ArrayList<String> team1Logos, team2Logos, gameDates, gameTimes, gameTypes, gameLocations,team1Nicknames,
             team2Nicknames, team1Scores, team2Scores, team1Wins, team1Losses, team2Wins, team2Losses;
 
     private ProgressBar progressBar;
@@ -52,6 +52,8 @@ public class GamesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.games_fragment, container, false);
 
+        team1Logos = new ArrayList<>();
+        team2Logos = new ArrayList<>();
         gameDates = new ArrayList<>();
         gameTimes = new ArrayList<>();
         gameTypes = new ArrayList<>();
@@ -134,6 +136,9 @@ public class GamesFragment extends Fragment {
                     if(data.getKey().equals("Loss")){
                         team1Losses.add(data.getValue().toString());
                     }
+                    if(data.getKey().equals("Logo")){
+                        team1Logos.add(data.getValue().toString());
+                    }
                 }
             }
             @Override
@@ -156,12 +161,16 @@ public class GamesFragment extends Fragment {
                     if(data.getKey().equals("Loss")){
                         team2Losses.add(data.getValue().toString());
                     }
+                    if(data.getKey().equals("Logo")){
+                        team2Logos.add(data.getValue().toString());
+                    }
                 }
                 recyclerViewSetup(view);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
     }
 
     private String removeEquals(String data){
@@ -177,9 +186,10 @@ public class GamesFragment extends Fragment {
 
     private void recyclerViewSetup(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_games);
-        GamesRecyclerViewAdapter adapter = new GamesRecyclerViewAdapter(getContext(), team1Nicknames,
-                team2Nicknames, gameDates, gameTimes, gameTypes, gameLocations, team1Scores,
-                team2Scores, team1Wins, team1Losses, team2Wins, team2Losses);
+        GamesRecyclerViewAdapter adapter = new GamesRecyclerViewAdapter(getContext(), team1Logos,
+                team2Logos, team1Nicknames, team2Nicknames, gameDates, gameTimes, gameTypes,
+                gameLocations, team1Scores, team2Scores, team1Wins, team1Losses, team2Wins,
+                team2Losses);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

@@ -32,12 +32,13 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
     private RelativeLayout fixtureView;
     private LinearLayout resultsView;
 
-    private ArrayList<String> allTeam1, allTeam2, gameDates, gameTimes, gameTypes, gameLocations,
+    private ArrayList<String> team1Logos, team2Logos, allTeam1, allTeam2, gameDates, gameTimes, gameTypes, gameLocations,
         team1Scores, team2Scores, team1Wins, team1Losses, team2Wins, team2Losses;
 
     private Context context;
 
-    public GamesRecyclerViewAdapter(Context thisContext, ArrayList<String> team1,
+    public GamesRecyclerViewAdapter(Context thisContext, ArrayList<String> team1Logo,
+                                    ArrayList<String> team2Logo, ArrayList<String> team1,
                                     ArrayList<String> team2, ArrayList<String> gameDate,
                                     ArrayList<String> gameTime, ArrayList<String> gameType,
                                     ArrayList<String> gameLocation, ArrayList<String> team1Score,
@@ -45,6 +46,8 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
                                     ArrayList<String> team1Loss, ArrayList<String> team2Win,
                                     ArrayList<String> team2Loss){
         context = thisContext;
+        team1Logos = team1Logo;
+        team2Logos = team2Logo;
         allTeam1 = team1;
         allTeam2 = team2;
         gameDates = gameDate;
@@ -79,6 +82,12 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         holder.team2Nickname.setText(allTeam2.get(position));
         holder.team1Record.setText(team1Wins.get(position) + " - " + team1Losses.get(position));
         holder.team2Record.setText(team2Wins.get(position) + " - " + team2Losses.get(position));
+        Glide.with(context)
+                .load(team1Logos.get(position))
+                .into(holder.team1);
+        Glide.with(context)
+                .load(team2Logos.get(position))
+                .into(holder.team2);
 
         if(gameTypes.get(position).equals("Result")){
             resultsView.setVisibility(View.VISIBLE);

@@ -26,8 +26,7 @@ public class TeamsFragment extends Fragment {
 
     private ProgressBar progressBar;
 
-    private ArrayList<String> names = new ArrayList<>();
-    private ArrayList<Integer> imageJpg = new ArrayList<>();
+    private ArrayList<String> names, imageJpg;
 
     private DatabaseReference databaseReference;
 
@@ -39,6 +38,8 @@ public class TeamsFragment extends Fragment {
         progressBar = view.findViewById(R.id.progress_bar_teams);
         progressBar.setIndeterminate(true);
         progressBar.setVisibility(View.VISIBLE);
+        names = new ArrayList<>();
+        imageJpg = new ArrayList<>();
 
         addTeamAndLogo(view);
         return view;
@@ -46,20 +47,6 @@ public class TeamsFragment extends Fragment {
 
     private void addTeamAndLogo(View view){
         final View VIEW = view;
-
-        imageJpg.add(R.drawable.barry_huskies_2nds);
-        imageJpg.add(R.drawable.beddau_knights);
-        imageJpg.add(R.drawable.cssc_swansea_storm_2nds);
-        imageJpg.add(R.drawable.caerphilly_cobras);
-        imageJpg.add(R.drawable.cardiff_city_2nds);
-        imageJpg.add(R.drawable.cardiff_met_archers_2nds);
-        imageJpg.add(R.drawable.cougars_2nds);
-        imageJpg.add(R.drawable.crickhowell_bulldogs);
-        imageJpg.add(R.drawable.newport_fury_2nds);
-        imageJpg.add(R.drawable.port_talbot_spartans);
-        imageJpg.add(R.drawable.south_wales_police);
-        imageJpg.add(R.drawable.uwtsd_owls);
-
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Teams");
 
@@ -69,6 +56,11 @@ public class TeamsFragment extends Fragment {
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     names.add(data.getKey());
                     recyclerViewSetup(VIEW);
+                    for(DataSnapshot getLogo : data.getChildren()){
+                        if(getLogo.getKey().equals("Logo")){
+                            imageJpg.add(getLogo.getValue().toString());
+                        }
+                    }
                 }
             }
             @Override

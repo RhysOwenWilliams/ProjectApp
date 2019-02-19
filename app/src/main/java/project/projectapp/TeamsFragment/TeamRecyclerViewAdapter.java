@@ -41,8 +41,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
     private static final String TEAM_LOCATION_LONGITUDE = "teamLocationLongitude";
     private static final String TEAM_LOGO = "teamLogo";
 
-    private ArrayList<String> teamNames, selectedTeamData;
-    private ArrayList<Integer> teamLogo;
+    private ArrayList<String> teamNames, selectedTeamData, teamLogo;
     private Context context;
 
     private DatabaseReference databaseReference;
@@ -54,7 +53,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
             selectedTeamLogo;
 
     public TeamRecyclerViewAdapter(Context thisContext, ArrayList<String> names,
-                                   ArrayList<Integer> logos){
+                                   ArrayList<String> logos){
         context = thisContext;
         teamNames = names;
         teamLogo = logos;
@@ -72,7 +71,6 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Glide.with(context)
-                .asBitmap()
                 .load(teamLogo.get(position))
                 .into(holder.teamImage);
 
@@ -171,7 +169,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
 
         ArrayList<String> formatted = new ArrayList<>();
         for(String data : rawData){
-            String[] removeUnwanted = data.split("=");
+            String[] removeUnwanted = data.split("=", 2);
             formatted.add(removeUnwanted[1]);
         }
         return formatted;

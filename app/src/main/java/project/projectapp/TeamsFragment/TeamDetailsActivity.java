@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import project.projectapp.R;
 
 public class TeamDetailsActivity extends AppCompatActivity {
@@ -92,7 +94,8 @@ public class TeamDetailsActivity extends AppCompatActivity {
         retrievedTeamLocationLatitude = getIntent().getStringExtra(TEAM_LOCATION_LATITUDE);
         retrievedTeamLocationLongitude = getIntent().getStringExtra(TEAM_LOCATION_LONGITUDE);
         retrievedTeamKitColour = getIntent().getStringExtra(TEAM_KIT_COLOUR);
-        //retrievedTeamLogo = getIntent().getStringExtra(TEAM_LOGO);
+        retrievedTeamLogo = getIntent().getStringExtra(TEAM_LOGO);
+        Log.d("teamdata", getIntent().getStringExtra(TEAM_LOGO));
         setDisplayData();
     }
 
@@ -103,17 +106,10 @@ public class TeamDetailsActivity extends AppCompatActivity {
         teamContactEmailAddress.setText(retrievedTeamContactEmailAddress);
         teamAddress.setText(formatAddress(retrievedTeamAddress));
         teamKitColour.setText("Kit Colourway: " + retrievedTeamKitColour);
-
-        getTeamLogo(retrievedTeamName);
-    }
-
-    private void getTeamLogo(String teamName){
-        String name = teamName.replace(" ", "_")
-                .toLowerCase();
-        String formatToDrawable = "@drawable/" + name;
-        int image = getResources().getIdentifier(formatToDrawable,null, getPackageName());
-        Drawable res = getResources().getDrawable(image);
-        logo.setImageDrawable(res);
+        Glide.with(this)
+                .asBitmap()
+                .load(retrievedTeamLogo)
+                .into(logo);
     }
 
     private String formatAddress(String address){

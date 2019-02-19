@@ -20,7 +20,7 @@
         android:id="@+id/image_view_standings"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/cardiff_city_2nds"
+        android:src="@drawable/cardiff_met_archers_2nds"
         android:layout_margin="10dp"
         android:layout_toRightOf="@+id/text_view_position_standings"
         android:background="@android:color/transparent"/>

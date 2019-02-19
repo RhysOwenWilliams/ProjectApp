@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +35,13 @@ public class StandingsFragment extends Fragment {
 
     private DatabaseReference databaseReference;
 
-    private String teamName;
+    private String teamName, logo;
     private int loss, wins, points;
 
     private HashMap<String, Integer> standings, sortedStandings;
 
-    private ArrayList<String> teamNames, teamWins, teamLosses, teamWinPercentages, teamTotalPoints;
-    private ArrayList<Drawable> teamLogo;
+    private ArrayList<String> teamNames, teamWins, teamLosses, teamWinPercentages, teamTotalPoints,
+            teamLogo;
 
     private ProgressBar progressBar;
 
@@ -81,7 +82,7 @@ public class StandingsFragment extends Fragment {
                     teamName = myData.getKey();
                     getTeamWinsLosses(myData);
                     scoreTotal(wins, loss);
-                    String mapKey = teamName + ", " + wins + ", " + loss;
+                    String mapKey = teamName + ", " + wins + ", " + loss + ", " + logo;
 
                     standings.put(mapKey, points);
                     sortByValue(standings);
@@ -106,8 +107,11 @@ public class StandingsFragment extends Fragment {
                 .replace("}", "");
         String[] splitData = removeCurlyBrackets.split(",");
 
+
         for(int i = 0; i < splitData.length; i++){
             setWinsLoss(splitData[5], splitData[2]);
+            String[] split = splitData[8].split("=", 2);
+            logo = split[1];
         }
     }
 
@@ -172,25 +176,17 @@ public class StandingsFragment extends Fragment {
             String team = splitKey[0];
             String wins = splitKey[1];
             String losses = splitKey[2];
+            String logo = splitKey[3];
             String winPercentage = calculateWinPercentage(wins, losses);
             String totalPoints = String.valueOf(s.getValue());
 
-            addImages(team);
+            teamLogo.add(logo);
             teamNames.add(team);
             teamWins.add(wins);
             teamLosses.add(losses);
             teamWinPercentages.add(winPercentage);
             teamTotalPoints.add(totalPoints);
         }
-    }
-
-    private void addImages(String teamName){
-        String format = teamName.replace(" ", "_").toLowerCase();
-        String formatToDrawable = "@drawable/" + format;
-        int image = getResources().getIdentifier(formatToDrawable,null, getContext().getPackageName());
-        Drawable res = getResources().getDrawable(image);
-
-        teamLogo.add(res);
     }
 
     private String calculateWinPercentage(String wins, String losses){

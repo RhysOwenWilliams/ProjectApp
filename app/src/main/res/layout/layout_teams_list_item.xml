@@ -11,7 +11,7 @@
         android:id="@+id/image_view_teams"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/cardiff_city_2nds"
+        android:src="@drawable/cardiff_met_archers_2nds"
         android:layout_marginLeft="10dp"
         android:layout_margin="10dp"
         android:background="@android:color/transparent"/>

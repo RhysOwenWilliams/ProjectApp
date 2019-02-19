@@ -126,7 +126,7 @@ public class OfficialNewsTabFragment extends Fragment {
         String[] splitPost = postDetails.replace("{", "")
                 .replace("}","")
                 .split(",");
-
+        Log.d("teamdata", splitPost[1]);
         postDate = structureContent(splitPost[0]);
         profileImage = structureContent(splitPost[1]);
         postTime = structureContent(splitPost[2]);
