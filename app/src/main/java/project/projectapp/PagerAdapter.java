@@ -1,4 +1,4 @@
-package project.projectapp.NewsFragment;
+package project.projectapp;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsPagerAdapter extends FragmentPagerAdapter {
+public class PagerAdapter extends FragmentPagerAdapter {
 
     private final List<Fragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentNameList = new ArrayList<>();
@@ -18,7 +18,7 @@ public class NewsPagerAdapter extends FragmentPagerAdapter {
         fragmentNameList.add(title);
     }
 
-    public NewsPagerAdapter(FragmentManager fragmentManager){
+    public PagerAdapter(FragmentManager fragmentManager){
         super(fragmentManager);
     }
 

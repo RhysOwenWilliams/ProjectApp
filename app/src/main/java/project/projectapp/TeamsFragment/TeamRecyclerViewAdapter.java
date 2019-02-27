@@ -40,6 +40,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
     private static final String TEAM_LOCATION_LATITUDE = "teamLocationLatitude";
     private static final String TEAM_LOCATION_LONGITUDE = "teamLocationLongitude";
     private static final String TEAM_LOGO = "teamLogo";
+    private static final String TEAM_NICKNAME = "teamNickname";
 
     private ArrayList<String> teamNames, selectedTeamData, teamLogo;
     private Context context;
@@ -47,10 +48,10 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
     private DatabaseReference databaseReference;
 
     private String teamName, address, contactName, loss, latitude, longitude, wins,
-            contactEmailAddress, kitColour, logo, selectedTeamName, selectedTeamWins,
+            contactEmailAddress, kitColour, logo, nickname, selectedTeamName, selectedTeamWins,
             selectedTeamLosses, selectedTeamContactName, selectedTeamContactEmailAddress,
             selectedTeamAddress, selectedTeamLatitude, selectedTeamLongitude, selectedTeamKitColour,
-            selectedTeamLogo;
+            selectedTeamLogo, selectedNickname;
 
     public TeamRecyclerViewAdapter(Context thisContext, ArrayList<String> names,
                                    ArrayList<String> logos){
@@ -110,11 +111,13 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
                     contactEmailAddress = splitData[6];
                     kitColour = splitData[7];
                     logo = splitData[8];
+                    nickname = splitData[9];
                 }
                 teamName = teamNames.get(position);
 
                 retrieveSelectedData(teamName, formatTeamData(address, contactName,
-                        loss, latitude, longitude, wins, contactEmailAddress, kitColour, logo));
+                        loss, latitude, longitude, wins, contactEmailAddress, kitColour, logo,
+                        nickname));
 
             }
 
@@ -135,6 +138,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
             selectedTeamLongitude = selectedTeamDetails.get(6);
             selectedTeamKitColour = selectedTeamDetails.get(7);
             selectedTeamLogo = selectedTeamDetails.get(8);
+            selectedNickname = selectedTeamDetails.get(9);
         }
 
         Intent intent = new Intent(context, TeamDetailsActivity.class);
@@ -148,6 +152,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
         intent.putExtra(TEAM_LOCATION_LONGITUDE, selectedTeamLongitude);
         intent.putExtra(TEAM_KIT_COLOUR, selectedTeamKitColour);
         intent.putExtra(TEAM_LOGO, selectedTeamLogo);
+        intent.putExtra(TEAM_NICKNAME, selectedNickname);
         context.startActivity(intent);
 
     }
@@ -155,7 +160,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
     public ArrayList<String> formatTeamData(String address, String contactName,
                                                   String loss, String latitude, String longitude,
                                                   String wins, String contactEmailAddress,
-                                                  String kitColour, String logo){
+                                                  String kitColour, String logo, String nickname){
         ArrayList<String> rawData = new ArrayList<>();
         rawData.add(wins);
         rawData.add(loss);
@@ -166,6 +171,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
         rawData.add(longitude);
         rawData.add(kitColour);
         rawData.add(logo);
+        rawData.add(nickname);
 
         ArrayList<String> formatted = new ArrayList<>();
         for(String data : rawData){

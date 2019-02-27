@@ -28,9 +28,12 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_send_black_24dp" />
+                            <entry key="color" value="7e7e7e" />
+                            <entry key="height" value="36" />
+                            <entry key="outputName" value="ic_send_primary_36dp" />
+                            <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\Rhys" />
+                            <entry key="width" value="36" />
                           </map>
                         </option>
                       </PersistentState>

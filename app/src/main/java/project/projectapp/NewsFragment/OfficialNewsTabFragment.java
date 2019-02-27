@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +25,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import project.projectapp.R;
 import project.projectapp.StandingsFragment.StandingsRecyclerViewAdapter;
@@ -36,9 +39,10 @@ public class OfficialNewsTabFragment extends Fragment {
     private FloatingActionButton addNewsArticle;
     private ProgressBar progressBar;
 
-    private String profileImage, profileUsername, postDate, postTime, postTitle, postContent;
+    private String profileImage, profileUsername, postDate, postTime, postTitle, postContent, postId;
 
-    private ArrayList<String> images, usernames, dates, times, titles, contents;
+    private ArrayList<String> images, usernames, dates, times, titles, contents, postIds;
+    private Map<String, Integer> commentCount;
 
     private FirebaseAuth firebaseAuth;
 
@@ -46,7 +50,8 @@ public class OfficialNewsTabFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.official_news_tab_fragment, container, false);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -57,6 +62,9 @@ public class OfficialNewsTabFragment extends Fragment {
         times = new ArrayList<>();
         titles = new ArrayList<>();
         contents = new ArrayList<>();
+        postIds = new ArrayList<>();
+
+        commentCount = new LinkedHashMap<>();
 
         addNewsArticle = view.findViewById(R.id.official_news_floating_action_button);
         progressBar = view.findViewById(R.id.official_news_progress_bar);
@@ -72,7 +80,6 @@ public class OfficialNewsTabFragment extends Fragment {
      * to be shown in the recycler view
      */
     private void retrieveOfficialArticles(final View view) {
-        final View VIEW = view;
 
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Official News");
@@ -87,10 +94,13 @@ public class OfficialNewsTabFragment extends Fragment {
                 titles.clear();
                 contents.clear();
                 usernames.clear();
+                postIds.clear();
 
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     String postDetails = data.getValue().toString();
                     getPostDetails(postDetails);
+
+                    postId = data.getKey();
 
                     dates.add(postDate);
                     images.add(profileImage);
@@ -98,35 +108,21 @@ public class OfficialNewsTabFragment extends Fragment {
                     titles.add(postTitle);
                     contents.add(postContent);
                     usernames.add(profileUsername);
+                    postIds.add(postId);
                 }
 
-                reverseOrderOfArrays();
-
-                recyclerViewSetup(VIEW);
+                getCommentCount(postIds, view);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
-    /**
-     * This is used such that the articles appear in order of newest at the top and oldest at the
-     * bottom
-     */
-    private void reverseOrderOfArrays() {
-        Collections.reverse(dates);
-        Collections.reverse(images);
-        Collections.reverse(times);
-        Collections.reverse(titles);
-        Collections.reverse(contents);
-        Collections.reverse(usernames);
-    }
-
     private void getPostDetails(String postDetails){
         String[] splitPost = postDetails.replace("{", "")
                 .replace("}","")
                 .split(",");
-        Log.d("teamdata", splitPost[1]);
+
         postDate = structureContent(splitPost[0]);
         profileImage = structureContent(splitPost[1]);
         postTime = structureContent(splitPost[2]);
@@ -193,11 +189,45 @@ public class OfficialNewsTabFragment extends Fragment {
     }
 
     private void recyclerViewSetup(View view){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_news);
         NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(getContext(), images,
-                usernames, dates, times, titles, contents);
+                usernames, dates, times, titles, contents, postIds, commentCount);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+    }
+
+    private void getCommentCount(final ArrayList<String> postIds, final View view){
+
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Comments");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(String postId : postIds){
+                    commentCount.put(postId, 0);
+                    for(DataSnapshot comments : dataSnapshot.getChildren()){
+                        if(comments.getKey().equals(postId)){
+                            int j = 0;
+                            for(DataSnapshot commentCount : comments.getChildren()){
+                                j++;
+                            }
+                            commentCount.put(comments.getKey(), j);
+                        }
+                    }
+                }
+                recyclerViewSetup(view);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

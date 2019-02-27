@@ -1,62 +1,60 @@
 package project.projectapp.TeamsFragment;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import project.projectapp.PagerAdapter;
 import project.projectapp.R;
+import project.projectapp.TeamsFragment.TeamRoster.TeamRosterFragment;
 
 public class TeamDetailsActivity extends AppCompatActivity {
 
-    private static final String TEAM_DETAILS_TITLE = "Team Details";
-
     private static final String TEAM_NAME = "teamName";
-    private static final String TEAM_ADDRESS = "teamAddress";
-    private static final String TEAM_CONTACT_NAME = "teamContactName";
-    private static final String TEAM_CONTACT_EMAIL_ADDRESS = "teamContactEmailAddress";
     private static final String TEAM_WINS = "teamWins";
     private static final String TEAM_LOSSES = "teamLosses";
-    private static final String TEAM_KIT_COLOUR = "teamKitColour";
-    private static final String TEAM_LOCATION_LATITUDE = "teamLocationLatitude";
-    private static final String TEAM_LOCATION_LONGITUDE = "teamLocationLongitude";
     private static final String TEAM_LOGO = "teamLogo";
+    private static final String TEAM_NICKNAME = "teamNickname";
 
-    private Button viewLocation;
-    private ImageView logo;
-    private TextView teamName, teamRecord, teamContactName, teamContactEmailAddress,
-        teamAddress, teamKitColour;
+    private ImageView teamLogo, toolbarTeamLogo;
+    private TextView teamName, teamRecord, teamNickname;
     private Toolbar toolbar;
+    private LinearLayout information;
+    private View redBar;
 
-    private String retrievedTeamName, retrievedTeamWins, retrievedTeamLosses,
-            retrievedTeamContactName, retrievedTeamContactEmailAddress, retrievedTeamAddress,
-            retrievedTeamLocationLatitude, retrievedTeamLocationLongitude, retrievedTeamKitColour,
-            retrievedTeamLogo;
+    private String retrievedTeamName, retrievedTeamWins, retrievedTeamLosses, retrievedTeamLogo,
+            retrievedTeamNickname;
+
+    private Animation slideUp;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_details);
 
-        viewLocation = findViewById(R.id.button_team_location);
-        teamName = findViewById(R.id.text_view_selected_name);
-        teamRecord = findViewById(R.id.text_view_selected_record);
-        teamContactName = findViewById(R.id.text_view_selected_contact_name);
-        teamContactEmailAddress = findViewById(R.id.text_view_selected_contact_email_address);
-        teamAddress = findViewById(R.id.text_view_selected_address);
-        teamKitColour = findViewById(R.id.text_view_selected_kit_colour);
-        logo = findViewById(R.id.team_details_logo);
+        teamLogo = findViewById(R.id.team_details_logo);
+        toolbarTeamLogo = findViewById(R.id.team_details_toolbar_logo);
+        teamName = findViewById(R.id.team_details_team_name);
+        teamRecord = findViewById(R.id.team_details_record);
+        teamNickname = findViewById(R.id.team_details_toolbar_nickname);
+        redBar = findViewById(R.id.team_details_red_bar);
+
+        information = findViewById(R.id.team_details_toolbar_information);
+        slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
 
         toolbar = findViewById(R.id.team_details_toolbar);
         setSupportActionBar(toolbar);
@@ -67,54 +65,68 @@ public class TeamDetailsActivity extends AppCompatActivity {
                 .setColorFilter(getResources().getColor(R.color.colorSplash),
                         PorterDuff.Mode.SRC_ATOP);
 
-        viewLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toMapsView();
-            }
-        });
+
+        ViewPager viewPager = findViewById(R.id.team_details_view_pager);
+        setupViewPager(viewPager);
+
+        TabLayout tabs = findViewById(R.id.team_details_tab_layout);
+        tabs.setupWithViewPager(viewPager);
 
         retrieveTeamDetails();
-    }
-
-    private void toMapsView() {
-        Intent maps = new Intent(TeamDetailsActivity.this, TeamDetailsMapsLocation.class);
-        maps.putExtra("latitude", retrievedTeamLocationLatitude);
-        maps.putExtra("longitude", retrievedTeamLocationLongitude);
-        startActivity(maps);
+        addInfoWhenCollapsed();
     }
 
     private void retrieveTeamDetails(){
         retrievedTeamName = getIntent().getStringExtra(TEAM_NAME);
-        retrievedTeamAddress = getIntent().getStringExtra(TEAM_ADDRESS);
-        retrievedTeamContactName = getIntent().getStringExtra(TEAM_CONTACT_NAME);
-        retrievedTeamContactEmailAddress = getIntent().getStringExtra(TEAM_CONTACT_EMAIL_ADDRESS);
         retrievedTeamWins = getIntent().getStringExtra(TEAM_WINS);
         retrievedTeamLosses = getIntent().getStringExtra(TEAM_LOSSES);
-        retrievedTeamLocationLatitude = getIntent().getStringExtra(TEAM_LOCATION_LATITUDE);
-        retrievedTeamLocationLongitude = getIntent().getStringExtra(TEAM_LOCATION_LONGITUDE);
-        retrievedTeamKitColour = getIntent().getStringExtra(TEAM_KIT_COLOUR);
         retrievedTeamLogo = getIntent().getStringExtra(TEAM_LOGO);
-        Log.d("teamdata", getIntent().getStringExtra(TEAM_LOGO));
-        setDisplayData();
+        retrievedTeamNickname = getIntent().getStringExtra(TEAM_NICKNAME);
+        setTeamDetails();
     }
 
-    private void setDisplayData(){
+    private void setTeamDetails(){
+        Glide.with(this)
+                .load(retrievedTeamLogo)
+                .into(teamLogo);
+        Glide.with(this)
+                .load(retrievedTeamLogo)
+                .into(toolbarTeamLogo);
         teamName.setText(retrievedTeamName);
         teamRecord.setText(retrievedTeamWins + " - " + retrievedTeamLosses);
-        teamContactName.setText(retrievedTeamContactName);
-        teamContactEmailAddress.setText(retrievedTeamContactEmailAddress);
-        teamAddress.setText(formatAddress(retrievedTeamAddress));
-        teamKitColour.setText("Kit Colourway: " + retrievedTeamKitColour);
-        Glide.with(this)
-                .asBitmap()
-                .load(retrievedTeamLogo)
-                .into(logo);
+        teamNickname.setText(retrievedTeamNickname);
     }
 
-    private String formatAddress(String address){
-        String formatted = address.replace("; ", ", ");
-        return formatted;
+    private void addInfoWhenCollapsed() {
+        AppBarLayout appBarLayout = findViewById(R.id.team_details_appbar);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    information.setVisibility(View.VISIBLE);
+                    redBar.setVisibility(View.VISIBLE);
+                    information.startAnimation(slideUp);
+                    isShow = true;
+                } else if(isShow) {
+                    information.setVisibility(View.INVISIBLE);
+                    //redBar.setVisibility(View.INVISIBLE);
+                    isShow = false;
+                }
+            }
+        });
+    }
+
+    private void setupViewPager(ViewPager viewPager){
+        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new TeamBioFragment(), "Bio");
+        adapter.addFragment(new TeamRosterFragment(), "Roster");
+        viewPager.setAdapter(adapter);
     }
 
     /**

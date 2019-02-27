@@ -55,6 +55,10 @@
             android:name=".NewsFragment.NewNewsArticleActivity">
         </activity>
         <activity
+            android:name=".NewsFragment.Comments.CommentsActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import project.projectapp.R;
 import project.projectapp.TeamsFragment.TeamRecyclerViewAdapter;
@@ -37,6 +38,7 @@ import project.projectapp.TeamsFragment.TeamRecyclerViewAdapter;
 //TODO: based on the name of the team, search the teams section for additional data
 public class GamesFragment extends Fragment {
 
+    private int position;
     private String team1, team2, gameDate, gameTime, gameType, gameLocation, team1Score, team2Score;
 
     private ArrayList<String> team1Logos, team2Logos, gameDates, gameTimes, gameTypes, gameLocations,team1Nicknames,
@@ -72,6 +74,7 @@ public class GamesFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
 
         getGames(view);
+
         return view;
     }
 
@@ -85,11 +88,25 @@ public class GamesFragment extends Fragment {
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     getData(data);
                     getTeamNickname(team1, team2, view);
+
+
+                    scrollToNextFixture(data);
+
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+    }
+
+    private void scrollToNextFixture(DataSnapshot data){
+        for(DataSnapshot type : data.getChildren()){
+            if(type.getKey().equals("Type")){
+                if(type.getValue().toString().equals("Result")){
+                    position++;
+                }
+            }
+        }
     }
 
     /**
@@ -170,7 +187,7 @@ public class GamesFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
+        gameDateToValue();
     }
 
     private String removeEquals(String data){
@@ -193,8 +210,54 @@ public class GamesFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        recyclerView.getLayoutManager().scrollToPosition(position);
+
         //The recyclerview is done loading and we can now hide the progress bar
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Tests the game date against todays date to change games from fixtures to results
+     */
+    //TODO: this can be improved by instead waiting for the 'official' to finish inserting the game score and on completion, change it to a result
+    //TODO: extending on this, once the official has chosen to start inserting scores, it changes to a live game
+    private void gameDateToValue() {
+        for(String date : gameDates){
+            String[] splitDate = date.split(" ");
+            String month = splitDate[0];
+            String day = splitDate[1];
+            String year = splitDate[2];
+
+            String formatted = year + formatNumber(monthNameToValue(month)) + day;
+
+            if(Integer.valueOf(formatted) > Integer.valueOf(getDateTimeAndFormat())){
+                Log.d("teamdata", "future date");
+                Log.d("teamdata", formatted);
+                Log.d("teamdata", getDateTimeAndFormat());
+            } else {
+                Log.d("teamdata", "past date");
+                Log.d("teamdata", formatted);
+                Log.d("teamdata", getDateTimeAndFormat());
+            }
+
+        }
+    }
+
+    private String getDateTimeAndFormat() {
+        String todayDateTime = String.valueOf(Calendar.getInstance().getTime());
+
+        // Calendar.getInstance().getTime() returns a long string of various data for today, split and access what we need
+        String[] splitTime = todayDateTime.split(" ");
+        String formattedDate = splitTime[5] + formatNumber(monthNameToValue(splitTime[1])) + splitTime[2];
+        return formattedDate;
+    }
+
+    private String formatNumber(int number){
+        if(String.valueOf(number).length() == 1) {
+            String value = "0" + String.valueOf(number);
+            return value;
+        }
+        return null;
     }
 
     private int monthNameToValue(String month){
@@ -226,5 +289,4 @@ public class GamesFragment extends Fragment {
         }
         return 0;
     }
-
 }

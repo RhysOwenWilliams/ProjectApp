@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import project.projectapp.PagerAdapter;
 import project.projectapp.R;
 
 public class NewsFragment extends Fragment {
@@ -36,7 +37,7 @@ public class NewsFragment extends Fragment {
 
 
     private void setupViewPager(ViewPager viewPager){
-        NewsPagerAdapter adapter = new NewsPagerAdapter(getChildFragmentManager());
+        PagerAdapter adapter = new PagerAdapter(getChildFragmentManager());
         adapter.addFragment(new OfficialNewsTabFragment(), "Official News");
         adapter.addFragment(new TeamNewsTabFragment(), "Team News");
         viewPager.setAdapter(adapter);

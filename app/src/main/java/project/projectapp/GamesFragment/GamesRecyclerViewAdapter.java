@@ -1,9 +1,12 @@
 package project.projectapp.GamesFragment;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,8 +79,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.team1Nickname.setText(allTeam1.get(position));
         holder.team2Nickname.setText(allTeam2.get(position));
         holder.team1Record.setText(team1Wins.get(position) + " - " + team1Losses.get(position));
