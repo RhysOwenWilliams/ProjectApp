@@ -2,6 +2,7 @@ package project.projectapp.GamesFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.print.PrinterId;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -38,11 +40,17 @@ import project.projectapp.TeamsFragment.TeamRecyclerViewAdapter;
 //TODO: based on the name of the team, search the teams section for additional data
 public class GamesFragment extends Fragment {
 
-    private int position;
-    private String team1, team2, gameDate, gameTime, gameType, gameLocation, team1Score, team2Score;
+    private final String ALLOW_COMMA = "@%$%@$#%";
 
-    private ArrayList<String> team1Logos, team2Logos, gameDates, gameTimes, gameTypes, gameLocations,team1Nicknames,
-            team2Nicknames, team1Scores, team2Scores, team1Wins, team1Losses, team2Wins, team2Losses;
+    private boolean firstOpened;
+    private int position;
+
+    private ArrayList<String> team1Logos, team2Logos, gameDates, gameTimes, gameTypes, gameLocations,
+            team1Nicknames, team2Nicknames, team1Scores, team2Scores, team1Wins, team1Losses,
+            team2Wins, team2Losses, team1Abbreviations, team2Abbreviations, nonTeamSpecificDatas,
+            gameBreakdowns, allTeams, team1, team2, allScores, team1ScoresQ1, team1ScoresQ2,
+            team1ScoresQ3, team1ScoresQ4, team2ScoresQ1, team2ScoresQ2, team2ScoresQ3, team2ScoresQ4,
+            gameIds;
 
     private ProgressBar progressBar;
 
@@ -53,6 +61,8 @@ public class GamesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.games_fragment, container, false);
+
+        firstOpened = true;
 
         team1Logos = new ArrayList<>();
         team2Logos = new ArrayList<>();
@@ -68,6 +78,23 @@ public class GamesFragment extends Fragment {
         team1Losses = new ArrayList<>();
         team2Wins = new ArrayList<>();
         team2Losses = new ArrayList<>();
+        team1Abbreviations = new ArrayList<>();
+        team2Abbreviations = new ArrayList<>();
+        nonTeamSpecificDatas = new ArrayList<>();
+        gameBreakdowns = new ArrayList<>();
+        allTeams = new ArrayList<>();
+        team1 = new ArrayList<>();
+        team2 = new ArrayList<>();
+        allScores = new ArrayList<>();
+        team1ScoresQ1 = new ArrayList<>();
+        team1ScoresQ2 = new ArrayList<>();
+        team1ScoresQ3 = new ArrayList<>();
+        team1ScoresQ4 = new ArrayList<>();
+        team2ScoresQ1 = new ArrayList<>();
+        team2ScoresQ2 = new ArrayList<>();
+        team2ScoresQ3 = new ArrayList<>();
+        team2ScoresQ4 = new ArrayList<>();
+        gameIds = new ArrayList<>();
 
         progressBar = view.findViewById(R.id.progress_bar_games);
         progressBar.setIndeterminate(true);
@@ -78,6 +105,39 @@ public class GamesFragment extends Fragment {
         return view;
     }
 
+    private void clear(){
+        team1Logos.clear();
+        team2Logos.clear();
+        gameDates.clear();
+        gameTimes.clear();
+        gameTypes.clear();
+        gameLocations.clear();
+        team1Nicknames.clear();
+        team2Nicknames.clear();
+        team1Scores.clear();
+        team2Scores.clear();
+        team1Wins.clear();
+        team1Losses.clear();
+        team2Wins.clear();
+        team2Losses.clear();
+        team1Abbreviations.clear();
+        team2Abbreviations.clear();
+        nonTeamSpecificDatas.clear();
+        gameBreakdowns.clear();
+        allTeams.clear();
+        team1.clear();
+        team2.clear();
+        allScores.clear();
+        team1ScoresQ1.clear();
+        team1ScoresQ2.clear();
+        team1ScoresQ3.clear();
+        team1ScoresQ4.clear();
+        team2ScoresQ1.clear();
+        team2ScoresQ2.clear();
+        team2ScoresQ3.clear();
+        team2ScoresQ4.clear();
+    }
+
     private void getGames(final View view){
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Games");
@@ -85,18 +145,69 @@ public class GamesFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                clear();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
-                    getData(data);
-                    getTeamNickname(team1, team2, view);
-
-
-                    scrollToNextFixture(data);
-
+                    if(firstOpened){
+                        scrollToNextFixture(data);
+                    }
+                    for(DataSnapshot keys : data.getChildren()){
+                        if(!keys.getKey().equals("Team 1") && !keys.getKey().equals("Team 2")){
+                            getNonTeamData(keys);
+                        } else {
+                            getRemainingData(keys);
+                        }
+                    }
                 }
+                setNonTeamData();
+                setRemainingData();
+                getTeamNickname(team1, team2, view);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+    }
+
+    private void setRemainingData() {
+        for(int i = 0; i < allTeams.size(); i+=2){
+            team1.add(allTeams.get(i));
+            team2.add(allTeams.get(i+1));
+        }
+
+        for(int i = 0; i < allScores.size(); i+=10){
+            team1ScoresQ1.add(allScores.get(i));
+            team1ScoresQ2.add(allScores.get(i+1));
+            team1ScoresQ3.add(allScores.get(i+2));
+            team1ScoresQ4.add(allScores.get(i+3));
+            team1Scores.add(allScores.get(i+4));
+            team2ScoresQ1.add(allScores.get(i+5));
+            team2ScoresQ2.add(allScores.get(i+6));
+            team2ScoresQ3.add(allScores.get(i+7));
+            team2ScoresQ4.add(allScores.get(i+8));
+            team2Scores.add(allScores.get(i+9));
+        }
+    }
+
+    private void getRemainingData(DataSnapshot data){
+        for(DataSnapshot teamData : data.getChildren()){
+            if(teamData.getKey().equals("Name")){
+                allTeams.add(teamData.getValue().toString());
+            } else if (teamData.getKey().equals("Score")){
+                for(DataSnapshot scores : teamData.getChildren()){
+                    allScores.add(scores.getValue().toString());
+                }
+            }
+        }
+    }
+
+    private void setNonTeamData() {
+        for(int i = 0; i < nonTeamSpecificDatas.size(); i+=6){
+            gameBreakdowns.add(nonTeamSpecificDatas.get(i).replace(ALLOW_COMMA, ","));
+            gameDates.add(nonTeamSpecificDatas.get(i+1));
+            gameIds.add(nonTeamSpecificDatas.get(i+2));
+            gameLocations.add(formatLocation(nonTeamSpecificDatas.get(i+3)));
+            gameTimes.add(nonTeamSpecificDatas.get(i+4));
+            gameTypes.add(nonTeamSpecificDatas.get(i+5));
+        }
     }
 
     private void scrollToNextFixture(DataSnapshot data){
@@ -113,76 +224,71 @@ public class GamesFragment extends Fragment {
      * Separates the database data and stores them into strings
      * @param dataSnapshot
      */
-    private void getData(DataSnapshot dataSnapshot){
+    private void getNonTeamData(DataSnapshot dataSnapshot){
         String data = String.valueOf(dataSnapshot.getValue());
         String removeCurlyBrackets = data.replace("{", "")
                 .replace("}", "");
-        String[] splitData = removeCurlyBrackets.split(",");
 
-        gameTime = removeEquals(splitData[0]);
-        gameType = removeEquals(splitData[1]);
-        team1Score = removeEquals(splitData[2]);
-        team2Score = removeEquals(splitData[3]);
-        team1 = removeEquals(splitData[4]);
-        team2 = removeEquals(splitData[5]);
-        gameDate = removeEquals(splitData[6]);
-        gameLocation = formatLocation(removeEquals(splitData[7]));
-
-        gameTimes.add(gameTime);
-        gameTypes.add(gameType);
-        team1Scores.add(team1Score);
-        team2Scores.add(team2Score);
-        gameDates.add(gameDate);
-        gameLocations.add(gameLocation);
+        nonTeamSpecificDatas.add(removeCurlyBrackets);
     }
 
-    private void getTeamNickname(final String team1, final String team2, final View view) {
+    private void getTeamNickname(final ArrayList<String> team1, final ArrayList<String> team2, final View view) {
         databaseReference = FirebaseDatabase.getInstance()
-                .getReference("Teams").child(team1);
+                .getReference("Teams");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot data : dataSnapshot.getChildren()){
-                    if(data.getKey().equals("Nickname")){
-                        team1Nicknames.add(data.getValue().toString());
-                    }
-                    if(data.getKey().equals("Wins")){
-                        team1Wins.add(data.getValue().toString());
-                    }
-                    if(data.getKey().equals("Loss")){
-                        team1Losses.add(data.getValue().toString());
-                    }
-                    if(data.getKey().equals("Logo")){
-                        team1Logos.add(data.getValue().toString());
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
-
-        databaseReference = FirebaseDatabase.getInstance()
-                .getReference("Teams").child(team2);
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot data : dataSnapshot.getChildren()){
-                    if(data.getKey().equals("Nickname")){
-                        team2Nicknames.add(data.getValue().toString());
-                    }
-                    if(data.getKey().equals("Wins")){
-                        team2Wins.add(data.getValue().toString());
-                    }
-                    if(data.getKey().equals("Loss")){
-                        team2Losses.add(data.getValue().toString());
-                    }
-                    if(data.getKey().equals("Logo")){
-                        team2Logos.add(data.getValue().toString());
+                clearTeamData();
+                for(String teamName : team1){
+                    for(DataSnapshot data : dataSnapshot.getChildren()) {
+                        if (data.getKey().equals(teamName)) {
+                            for (DataSnapshot teamData : data.getChildren()) {
+                                if (teamData.getKey().equals("Nickname")) {
+                                    team1Nicknames.add(teamData.getValue().toString());
+                                }
+                                if (teamData.getKey().equals("Wins")) {
+                                    team1Wins.add(teamData.getValue().toString());
+                                }
+                                if (teamData.getKey().equals("Loss")) {
+                                    team1Losses.add(teamData.getValue().toString());
+                                }
+                                if (teamData.getKey().equals("Logo")) {
+                                    team1Logos.add(teamData.getValue().toString());
+                                }
+                                if (teamData.getKey().equals("Abbreviation")) {
+                                    team1Abbreviations.add(teamData.getValue().toString());
+                                }
+                            }
+                        }
                     }
                 }
+                for(String teamName : team2){
+                    for(DataSnapshot data : dataSnapshot.getChildren()){
+                        if(data.getKey().equals(teamName)){
+                            for(DataSnapshot teamData : data.getChildren()){
+                                if(teamData.getKey().equals("Nickname")){
+                                    team2Nicknames.add(teamData.getValue().toString());
+                                }
+                                if(teamData.getKey().equals("Wins")){
+                                    team2Wins.add(teamData.getValue().toString());
+                                }
+                                if(teamData.getKey().equals("Loss")){
+                                    team2Losses.add(teamData.getValue().toString());
+                                }
+                                if(teamData.getKey().equals("Logo")){
+                                    team2Logos.add(teamData.getValue().toString());
+                                }
+                                if(teamData.getKey().equals("Abbreviation")){
+                                    team2Abbreviations.add(teamData.getValue().toString());
+                                }
+                            }
+                        }
+                    }
+                }
+
                 recyclerViewSetup(view);
+                firstOpened = false;
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -190,9 +296,11 @@ public class GamesFragment extends Fragment {
         gameDateToValue();
     }
 
-    private String removeEquals(String data){
-        String[] noEquals = data.split("=");
-        return noEquals[1];
+    private void clearTeamData() {
+        team1Wins.clear();
+        team1Losses.clear();
+        team2Wins.clear();
+        team2Losses.clear();
     }
 
     private String formatLocation(String data){
@@ -203,18 +311,45 @@ public class GamesFragment extends Fragment {
 
     private void recyclerViewSetup(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_games);
-        GamesRecyclerViewAdapter adapter = new GamesRecyclerViewAdapter(getContext(), team1Logos,
-                team2Logos, team1Nicknames, team2Nicknames, gameDates, gameTimes, gameTypes,
-                gameLocations, team1Scores, team2Scores, team1Wins, team1Losses, team2Wins,
-                team2Losses);
+        GamesRecyclerViewAdapter adapter = new GamesRecyclerViewAdapter(getContext(), team1, team2,
+                team1Logos, team2Logos, team1Nicknames, team2Nicknames, gameDates, gameTimes,
+                gameTypes, gameLocations, team1Scores, team2Scores, team1Wins, team1Losses,
+                team2Wins, team2Losses, team1Abbreviations, team2Abbreviations, team1ScoresQ1,
+                team1ScoresQ2, team1ScoresQ3, team1ScoresQ4, team2ScoresQ1, team2ScoresQ2,
+                team2ScoresQ3, team2ScoresQ4, gameBreakdowns, gameIds);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         recyclerView.getLayoutManager().scrollToPosition(position);
+
+        // Used so when the database is updated, it keeps the users last position
+        if(!firstOpened){
+            getUserLastScrolledPosition(recyclerView);
+        }
 
         //The recyclerview is done loading and we can now hide the progress bar
         progressBar.setVisibility(View.INVISIBLE);
     }
+
+    private void getUserLastScrolledPosition(RecyclerView recyclerView) {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                int offset = recyclerView.computeVerticalScrollOffset();
+                int extent = recyclerView.computeVerticalScrollExtent();
+                int range = recyclerView.computeVerticalScrollRange();
+
+                int percentage = (int)(100.0 * offset / (float)(range - extent));
+
+
+                position = percentage/22; //20 represents each cell, and a further 2 for the gap
+            }
+        });
+    }
+
 
     /**
      * Tests the game date against todays date to change games from fixtures to results
@@ -231,13 +366,13 @@ public class GamesFragment extends Fragment {
             String formatted = year + formatNumber(monthNameToValue(month)) + day;
 
             if(Integer.valueOf(formatted) > Integer.valueOf(getDateTimeAndFormat())){
-                Log.d("teamdata", "future date");
-                Log.d("teamdata", formatted);
-                Log.d("teamdata", getDateTimeAndFormat());
+                //Log.d("teamdata", "future date");
+                //Log.d("teamdata", formatted);
+                //Log.d("teamdata", getDateTimeAndFormat());
             } else {
-                Log.d("teamdata", "past date");
-                Log.d("teamdata", formatted);
-                Log.d("teamdata", getDateTimeAndFormat());
+                //Log.d("teamdata", "past date");
+                //Log.d("teamdata", formatted);
+                //Log.d("teamdata", getDateTimeAndFormat());
             }
 
         }

@@ -107,10 +107,9 @@ public class StandingsFragment extends Fragment {
                 .replace("}", "");
         String[] splitData = removeCurlyBrackets.split(",");
 
-
         for(int i = 0; i < splitData.length; i++){
-            setWinsLoss(splitData[5], splitData[2]);
-            String[] split = splitData[8].split("=", 2);
+            setWinsLoss(splitData[6], splitData[3]);
+            String[] split = splitData[9].split("=", 2);
             logo = split[1];
         }
     }

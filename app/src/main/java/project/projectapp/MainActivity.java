@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         bottomNavigationView.getMenu().findItem(R.id.nav_games).setChecked(true);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new GamesFragment()).commit();
+               new GamesFragment()).commit();
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

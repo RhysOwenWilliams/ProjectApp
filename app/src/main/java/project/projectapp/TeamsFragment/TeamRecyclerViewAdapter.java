@@ -77,47 +77,47 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
 
         holder.teamName.setText(teamNames.get(position));
 
-        holder.teamLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getTeamDetails(position);
-            }
-        });
+        getTeamDetails(holder, position);
 
     }
 
-    private void getTeamDetails(final int position) {
+    private void getTeamDetails(final ViewHolder holder, final int position) {
         selectedTeamData = new ArrayList<>();
 
         databaseReference = FirebaseDatabase.getInstance()
-                .getReference("Teams")
-                .child(teamNames.get(position));
+                .getReference("Teams");
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.child(teamNames.get(position))
+                .addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String data = String.valueOf(dataSnapshot.getValue());
-                String removeCurlyBrackets = data.replace("{", "")
-                        .replace("}", "");
-                String[] splitData = removeCurlyBrackets.split(",");
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                holder.teamLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String data = String.valueOf(dataSnapshot.getValue());
+                        String removeCurlyBrackets = data.replace("{", "")
+                                .replace("}", "");
+                        String[] splitData = removeCurlyBrackets.split(",");
 
-                for(int i = 0; i < splitData.length; i++){
-                    address = splitData[0];
-                    contactName = splitData[1];
-                    loss = splitData[2];
-                    latitude = splitData[3];
-                    longitude = splitData[4];
-                    wins = splitData[5];
-                    contactEmailAddress = splitData[6];
-                    kitColour = splitData[7];
-                    logo = splitData[8];
-                    nickname = splitData[9];
-                }
-                teamName = teamNames.get(position);
+                        for(int i = 0; i < splitData.length; i++){
+                            address = splitData[1];
+                            contactName = splitData[2];
+                            loss = splitData[3];
+                            latitude = splitData[4];
+                            longitude = splitData[5];
+                            wins = splitData[6];
+                            contactEmailAddress = splitData[7];
+                            kitColour = splitData[8];
+                            logo = splitData[9];
+                            nickname = splitData[10];
+                        }
+                        teamName = teamNames.get(position);
 
-                retrieveSelectedData(teamName, formatTeamData(address, contactName,
-                        loss, latitude, longitude, wins, contactEmailAddress, kitColour, logo,
-                        nickname));
+                        retrieveSelectedData(teamName, formatTeamData(address, contactName,
+                                loss, latitude, longitude, wins, contactEmailAddress, kitColour,
+                                logo, nickname));
+                    }
+                });
 
             }
 

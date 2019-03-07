@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -27,32 +28,67 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import project.projectapp.GamesFragment.GameLive.LiveActivity;
+import project.projectapp.GamesFragment.GameResult.ResultsActivity;
 import project.projectapp.R;
 
 
 public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecyclerViewAdapter.ViewHolder>{
 
-    private RelativeLayout fixtureView;
+    private final String TEAM_1 = "team1Name";
+    private final String TEAM_2 = "team2Name";
+    private final String TEAM_1_SCORE = "team1Score";
+    private final String TEAM_2_SCORE = "team2Score";
+    private final String TEAM_1_NICKNAME = "team1Nickname";
+    private final String TEAM_2_NICKNAME = "team2Nickname";
+    private final String TEAM_1_LOGO = "team1Logo";
+    private final String TEAM_2_LOGO = "team2Logo";
+    private final String TEAM_1_ABBREVIATION = "team1Abbreviation";
+    private final String TEAM_2_ABBREVIATION = "team2Abbreviation";
+    private final String TEAM_1_SCORE_Q1 = "team1ScoreQ1";
+    private final String TEAM_1_SCORE_Q2 = "team1ScoreQ2";
+    private final String TEAM_1_SCORE_Q3 = "team1ScoreQ3";
+    private final String TEAM_1_SCORE_Q4 = "team1ScoreQ4";
+    private final String TEAM_2_SCORE_Q1 = "team2ScoreQ1";
+    private final String TEAM_2_SCORE_Q2 = "team2ScoreQ2";
+    private final String TEAM_2_SCORE_Q3 = "team2ScoreQ3";
+    private final String TEAM_2_SCORE_Q4 = "team2ScoreQ4";
+    private final String GAME_BREAKDOWN = "gameBreakdown";
+    private final String GAME_ID = "gameIds";
+
+    private RelativeLayout fixtureView, liveView;
     private LinearLayout resultsView;
 
-    private ArrayList<String> team1Logos, team2Logos, allTeam1, allTeam2, gameDates, gameTimes, gameTypes, gameLocations,
-        team1Scores, team2Scores, team1Wins, team1Losses, team2Wins, team2Losses;
+    private ArrayList<String> team1Names, team2Names, team1Logos, team2Logos, team1Nicknames,
+            team2Nicknames, gameDates, gameTimes, gameTypes, gameLocations, team1Scores,
+            team2Scores, team1Wins, team1Losses, team2Wins, team2Losses, team1Abbreviations,
+            team2Abbreviations, team1ScoresQ1, team1ScoresQ2, team1ScoresQ3, team1ScoresQ4,
+            team2ScoresQ1, team2ScoresQ2, team2ScoresQ3, team2ScoresQ4, gameBreakdowns, gameIds;
 
     private Context context;
 
-    public GamesRecyclerViewAdapter(Context thisContext, ArrayList<String> team1Logo,
+    public GamesRecyclerViewAdapter(Context thisContext, ArrayList<String> team1Name,
+                                    ArrayList<String> team2Name, ArrayList<String> team1Logo,
                                     ArrayList<String> team2Logo, ArrayList<String> team1,
                                     ArrayList<String> team2, ArrayList<String> gameDate,
                                     ArrayList<String> gameTime, ArrayList<String> gameType,
                                     ArrayList<String> gameLocation, ArrayList<String> team1Score,
                                     ArrayList<String> team2Score, ArrayList<String> team1Win,
                                     ArrayList<String> team1Loss, ArrayList<String> team2Win,
-                                    ArrayList<String> team2Loss){
+                                    ArrayList<String> team2Loss, ArrayList<String> team1Abbreviation,
+                                    ArrayList<String> team2Abbreviation, ArrayList<String> team1ScoreQ1,
+                                    ArrayList<String> team1ScoreQ2, ArrayList<String> team1ScoreQ3,
+                                    ArrayList<String> team1ScoreQ4, ArrayList<String> team2ScoreQ1,
+                                    ArrayList<String> team2ScoreQ2, ArrayList<String> team2ScoreQ3,
+                                    ArrayList<String> team2ScoreQ4, ArrayList<String> gameBreakdown,
+                                    ArrayList<String> gameId){
         context = thisContext;
+        team1Names = team1Name;
+        team2Names = team2Name;
         team1Logos = team1Logo;
         team2Logos = team2Logo;
-        allTeam1 = team1;
-        allTeam2 = team2;
+        team1Nicknames = team1;
+        team2Nicknames = team2;
         gameDates = gameDate;
         gameTimes = gameTime;
         gameTypes = gameType;
@@ -63,6 +99,18 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         team1Losses = team1Loss;
         team2Wins = team2Win;
         team2Losses = team2Loss;
+        team1Abbreviations = team1Abbreviation;
+        team2Abbreviations = team2Abbreviation;
+        team1ScoresQ1 = team1ScoreQ1;
+        team1ScoresQ2 = team1ScoreQ2;
+        team1ScoresQ3 = team1ScoreQ3;
+        team1ScoresQ4 = team1ScoreQ4;
+        team2ScoresQ1 = team2ScoreQ1;
+        team2ScoresQ2 = team2ScoreQ2;
+        team2ScoresQ3 = team2ScoreQ3;
+        team2ScoresQ4 = team2ScoreQ4;
+        gameBreakdowns = gameBreakdown;
+        gameIds = gameId;
     }
 
     @NonNull
@@ -74,14 +122,15 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
 
         fixtureView = view.findViewById(R.id.fixtures_display);
         resultsView = view.findViewById(R.id.results_display);
+        liveView = view.findViewById(R.id.live_display);
 
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        holder.team1Nickname.setText(allTeam1.get(position));
-        holder.team2Nickname.setText(allTeam2.get(position));
+        holder.team1Nickname.setText(team1Nicknames.get(position));
+        holder.team2Nickname.setText(team2Nicknames.get(position));
         holder.team1Record.setText(team1Wins.get(position) + " - " + team1Losses.get(position));
         holder.team2Record.setText(team2Wins.get(position) + " - " + team2Losses.get(position));
         Glide.with(context)
@@ -95,6 +144,12 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
             resultsView.setVisibility(View.VISIBLE);
             holder.team1Score.setText(team1Scores.get(position));
             holder.team2Score.setText(team2Scores.get(position));
+            holder.finished.setVisibility(View.VISIBLE);
+        } else if (gameTypes.get(position).equals("Live")){
+            resultsView.setVisibility(View.VISIBLE);
+            liveView.setVisibility(View.VISIBLE);
+            holder.team1Score.setText(team1Scores.get(position));
+            holder.team2Score.setText(team2Scores.get(position));
         } else {
             fixtureView.setVisibility(View.VISIBLE);
             holder.time.setText(gameTimes.get(position));
@@ -104,14 +159,62 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Clicked: " + allTeam1.get(position), Toast.LENGTH_SHORT).show();
+                if(gameTypes.get(position).equals("Result")){
+                    gameResult(team1Names.get(position), team2Names.get(position),
+                            team1Scores.get(position), team2Scores.get(position),
+                            team1Nicknames.get(position), team2Nicknames.get(position),
+                            team1Logos.get(position), team2Logos.get(position),
+                            team1Abbreviations.get(position), team2Abbreviations.get(position),
+                            team1ScoresQ1.get(position),
+                            team1ScoresQ2.get(position), team1ScoresQ3.get(position),
+                            team1ScoresQ4.get(position), team2ScoresQ1.get(position),
+                            team2ScoresQ2.get(position), team2ScoresQ3.get(position),
+                            team2ScoresQ4.get(position), gameBreakdowns.get(position),
+                            gameIds.get(position));
+                } else if (gameTypes.get(position).equals("Live")){
+                    Intent live = new Intent(context, LiveActivity.class);
+                    context.startActivity(live);
+                } else {
+                    Toast.makeText(context, "Clicked: " + gameTypes.get(position), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
+    private void gameResult(String team1, String team2, String team1Score, String team2Score,
+                            String team1Nickname, String team2Nickname, String team1Logo,
+                            String team2Logo, String team1Abbreviation, String team2Abbreviation,
+                            String team1ScoreQ1, String team1ScoreQ2, String team1ScoreQ3,
+                            String team1ScoreQ4, String team2ScoreQ1, String team2ScoreQ2,
+                            String team2ScoreQ3, String team2ScoreQ4, String gameBreakdown,
+                            String gameId){
+        Intent result = new Intent(context, ResultsActivity.class);
+        result.putExtra(TEAM_1, team1);
+        result.putExtra(TEAM_2, team2);
+        result.putExtra(TEAM_1_SCORE, team1Score);
+        result.putExtra(TEAM_2_SCORE, team2Score);
+        result.putExtra(TEAM_1_NICKNAME, team1Nickname);
+        result.putExtra(TEAM_2_NICKNAME, team2Nickname);
+        result.putExtra(TEAM_1_LOGO, team1Logo);
+        result.putExtra(TEAM_2_LOGO, team2Logo);
+        result.putExtra(TEAM_1_ABBREVIATION, team1Abbreviation);
+        result.putExtra(TEAM_2_ABBREVIATION, team2Abbreviation);
+        result.putExtra(TEAM_1_SCORE_Q1, team1ScoreQ1);
+        result.putExtra(TEAM_1_SCORE_Q2, team1ScoreQ2);
+        result.putExtra(TEAM_1_SCORE_Q3, team1ScoreQ3);
+        result.putExtra(TEAM_1_SCORE_Q4, team1ScoreQ4);
+        result.putExtra(TEAM_2_SCORE_Q1, team2ScoreQ1);
+        result.putExtra(TEAM_2_SCORE_Q2, team2ScoreQ2);
+        result.putExtra(TEAM_2_SCORE_Q3, team2ScoreQ3);
+        result.putExtra(TEAM_2_SCORE_Q4, team2ScoreQ4);
+        result.putExtra(GAME_BREAKDOWN, gameBreakdown);
+        result.putExtra(GAME_ID, gameId);
+        context.startActivity(result);
+    }
+
     @Override
     public int getItemCount() {
-        return allTeam2.size();
+        return gameBreakdowns.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -127,6 +230,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         TextView team2Record;
         TextView time;
         TextView date;
+        TextView finished;
         TextView location;
 
         public ViewHolder(@NonNull View itemView) {
@@ -142,6 +246,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
             team2Record = itemView.findViewById(R.id.fixture_results_list_team_2_record);
             time = itemView.findViewById(R.id.fixture_results_list_time);
             date = itemView.findViewById(R.id.fixture_results_list_date);
+            finished = itemView.findViewById(R.id.fixture_results_finished);
         }
     }
 }

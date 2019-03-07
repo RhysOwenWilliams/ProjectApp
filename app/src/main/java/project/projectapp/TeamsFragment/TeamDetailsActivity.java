@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -115,7 +116,6 @@ public class TeamDetailsActivity extends AppCompatActivity {
                     isShow = true;
                 } else if(isShow) {
                     information.setVisibility(View.INVISIBLE);
-                    //redBar.setVisibility(View.INVISIBLE);
                     isShow = false;
                 }
             }
@@ -136,10 +136,7 @@ public class TeamDetailsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
+        finish();
         return super.onOptionsItemSelected(item);
     }
 
@@ -148,10 +145,8 @@ public class TeamDetailsActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
+        finish();
     }
+
 }

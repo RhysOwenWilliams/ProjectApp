@@ -80,7 +80,6 @@ public class OfficialNewsTabFragment extends Fragment {
      * to be shown in the recycler view
      */
     private void retrieveOfficialArticles(final View view) {
-
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Official News");
 
@@ -188,19 +187,6 @@ public class OfficialNewsTabFragment extends Fragment {
                 R.anim.slide_out_from_bottom);
     }
 
-    private void recyclerViewSetup(View view){
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_news);
-        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(getContext(), images,
-                usernames, dates, times, titles, contents, postIds, commentCount);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-    }
-
     private void getCommentCount(final ArrayList<String> postIds, final View view){
 
         databaseReference = FirebaseDatabase.getInstance()
@@ -220,8 +206,9 @@ public class OfficialNewsTabFragment extends Fragment {
                             commentCount.put(comments.getKey(), j);
                         }
                     }
+
+                    recyclerViewSetup(view);
                 }
-                recyclerViewSetup(view);
             }
 
             @Override
@@ -229,5 +216,18 @@ public class OfficialNewsTabFragment extends Fragment {
 
             }
         });
+    }
+
+    private void recyclerViewSetup(View view){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_news);
+        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(getContext(), images,
+                usernames, dates, times, titles, contents, postIds, commentCount);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     }
 }

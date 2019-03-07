@@ -59,6 +59,12 @@
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
+            android:name=".GamesFragment.GameResult.ResultsActivity">
+        </activity>
+        <activity
+            android:name=".GamesFragment.GameLive.LiveActivity">
+        </activity>
+        <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
