@@ -319,6 +319,9 @@ public class GamesFragment extends Fragment {
                 team2ScoresQ3, team2ScoresQ4, gameBreakdowns, gameIds);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         recyclerView.getLayoutManager().scrollToPosition(position);

@@ -28,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import java.util.ArrayList;
 
 import project.projectapp.R;
@@ -64,7 +66,7 @@ public class ResultsActivity extends AppCompatActivity {
             team1PlayerScores, team2PlayerScores, team1Fouls, team2Fouls, allNumbers,
             allPlayerScores, allFouls;
 
-    private ExpandableRelativeLayout gameBreakdownLayout,  team2PlayerBreakdownLayout, team1PlayerBreakdownLayout;
+    private ExpandableLayout gameBreakdownLayout, team2PlayerBreakdownLayout, team1PlayerBreakdownLayout;
     private ImageView team1Logo, team2Logo, team1ToolbarLogo, team2ToolbarLogo;
     private TextView team1Nickname, team2Nickname, team1Score, team2Score, team1ToolbarName,
             team2ToolbarName, team1ByQuarterName, team2ByQuarterName, team1Total, team2Total,
@@ -74,7 +76,7 @@ public class ResultsActivity extends AppCompatActivity {
 
     private LinearLayout information;
 
-    private Animation slideUp;
+    private Animation slideUp, slideDown;
 
     private Toolbar toolbar;
 
@@ -83,6 +85,8 @@ public class ResultsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_result);
+
+        Log.d("activityruntime", "Option loading");
 
         playerCount = 0;
 
@@ -130,7 +134,8 @@ public class ResultsActivity extends AppCompatActivity {
         allFouls = new ArrayList<>();
 
         information = findViewById(R.id.results_toolbar_information);
-        slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        slideUp = AnimationUtils.loadAnimation(this, R.anim.splash_fade_in);
+        slideDown = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
         toolbar = findViewById(R.id.results_toolbar);
         setSupportActionBar(toolbar);
@@ -146,10 +151,10 @@ public class ResultsActivity extends AppCompatActivity {
         expandingLists(team2PlayerBreakdownLayout, team2PlayerData);
         retrieveIntentData();
         addInfoWhenCollapsed();
+
     }
 
-    private void expandingLists(final ExpandableRelativeLayout layout, final TextView text){
-        layout.collapse();
+    private void expandingLists(final ExpandableLayout layout, final TextView text){
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,8 +215,8 @@ public class ResultsActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    setLayoutData();
                 }
+                setLayoutData();
             }
 
             @Override
@@ -330,7 +335,8 @@ public class ResultsActivity extends AppCompatActivity {
         AppBarLayout appBarLayout = findViewById(R.id.results_appbar);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
-            boolean allowAnimation = true;
+            boolean allowAnimationUp = true;
+            boolean allowAnimationDown = false;
             int scrollRange = -1;
 
             @Override
@@ -340,13 +346,18 @@ public class ResultsActivity extends AppCompatActivity {
                 }
                 if (scrollRange + verticalOffset != 0) {
                     information.setVisibility(View.INVISIBLE);
+                    if(allowAnimationDown){
+                        information.startAnimation(slideDown);
+                        allowAnimationUp = true;
+                        allowAnimationDown = false;
+                    }
                     isShow = true;
-                    allowAnimation = true;
                 } else {
                     information.setVisibility(View.VISIBLE);
-                    if(allowAnimation){
+                    if(allowAnimationUp){
                         information.startAnimation(slideUp);
-                        allowAnimation = false;
+                        allowAnimationUp = false;
+                        allowAnimationDown = true;
                     }
                     isShow = false;
                 }
@@ -376,14 +387,18 @@ public class ResultsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+
     /**
      * Called when an option is selected, in this case the back button since it is the only option
      * @param item - our menu items, so the back button
-     * @return - the parent class' onOptionsItemSelected method
+     * @return - either true or the parent class' onOptionsItemSelected method
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -392,6 +407,10 @@ public class ResultsActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        finish();
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

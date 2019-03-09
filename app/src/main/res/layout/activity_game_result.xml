@@ -12,7 +12,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/results__collapsing"
+            android:id="@+id/results_collapsing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
@@ -45,8 +45,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/results_team_1"
                         android:layout_centerInParent="true"
-                        android:text="Huskies 2nds"
-                        android:textStyle="bold" />
+                        android:text="Huskies 2nds"/>
 
                 </RelativeLayout>
 
@@ -64,14 +63,14 @@
                         android:layout_marginBottom="10dp"
                         android:text="100"
                         android:textColor="@color/colorSplash"
-                        android:textSize="30dp" />
+                        android:textSize="28dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
                         android:text="final"
                         android:textColor="@color/colorSplash"
                         android:textSize="10dp" />
@@ -83,7 +82,7 @@
                         android:layout_marginBottom="10dp"
                         android:text="100"
                         android:textColor="@color/colorSplash"
-                        android:textSize="30dp" />
+                        android:textSize="28dp" />
                 </LinearLayout>
 
                 <RelativeLayout
@@ -105,8 +104,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/results_team_2"
                         android:layout_centerInParent="true"
-                        android:text="Nickname"
-                        android:textStyle="bold" />
+                        android:text="Nickname" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -688,7 +686,7 @@
                     android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"/>
             </LinearLayout>
 
-            <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            <net.cachapa.expandablelayout.ExpandableLayout
                 android:id="@+id/results_team_1_player_breakdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -696,65 +694,69 @@
                 android:background="#faf9f9f9"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                app:ael_duration="100"
-                app:ael_expanded="false"
-                app:ael_interpolator="accelerate"
-                app:ael_orientation="vertical">
+                app:el_duration="1000"
+                app:el_expanded="false">
+
                 <LinearLayout
-                    android:id="@+id/layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:orientation="horizontal"
-                    android:weightSum="100"
-                    android:gravity="center_vertical">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:orientation="horizontal"
+                        android:weightSum="100"
+                        android:gravity="center_vertical">
 
-                    <TextView
-                        android:layout_width="180dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:text="PLAYER"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"
-                        android:layout_weight="92"/>
+                        <TextView
+                            android:layout_width="180dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="PLAYER"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:layout_weight="92"/>
 
-                    <View
-                        android:layout_width="1dp"
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/colorBackground" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="6"
+                            android:text="PTS"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="6"
+                            android:text="FLS"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@color/colorBackground" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="6"
-                        android:text="PTS"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="6"
-                        android:text="FLS"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+                        android:id="@+id/recycler_view_team_1_breakdown"
+                        android:layout_below="@+id/layout"/>
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/recycler_view_team_1_breakdown"
-                    android:layout_below="@+id/layout"/>
 
-
-            </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+            </net.cachapa.expandablelayout.ExpandableLayout>
 
             <LinearLayout
                 android:id="@+id/results_player_data_2"
@@ -781,7 +783,7 @@
                     android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"/>
             </LinearLayout>
 
-            <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            <net.cachapa.expandablelayout.ExpandableLayout
                 android:id="@+id/results_team_2_player_breakdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -789,65 +791,67 @@
                 android:background="#faf9f9f9"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                app:ael_duration="100"
-                app:ael_expanded="false"
-                app:ael_interpolator="accelerate"
-                app:ael_orientation="vertical">
+                app:el_duration="1000"
+                app:el_expanded="false">
 
                 <LinearLayout
-                    android:id="@+id/layout2"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:orientation="horizontal"
-                    android:weightSum="100"
-                    android:gravity="center_vertical">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/layout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:orientation="horizontal"
+                        android:weightSum="100"
+                        android:gravity="center_vertical">
 
-                    <TextView
-                        android:layout_width="180dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:text="PLAYER"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"
-                        android:layout_weight="88"/>
+                        <TextView
+                            android:layout_width="180dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:text="PLAYER"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:layout_weight="88"/>
 
-                    <View
-                        android:layout_width="1dp"
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/colorBackground" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="10"
+                            android:text="PTS"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="10"
+                            android:text="FLS"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@color/colorBackground" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="10"
-                        android:text="PTS"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="10"
-                        android:text="FLS"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
+                        android:id="@+id/recycler_view_team_2_breakdown"/>
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/recycler_view_team_2_breakdown"
-                    android:layout_below="@+id/layout2"/>
-
-            </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+            </net.cachapa.expandablelayout.ExpandableLayout>
 
             <LinearLayout
                 android:id="@+id/results_breakdown"
@@ -883,17 +887,14 @@
                     android:background="#e1e1e1" />
             </LinearLayout>
 
-            <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            <net.cachapa.expandablelayout.ExpandableLayout
                 android:id="@+id/results_game_breakdown_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/results_breakdown"
-                android:background="#faf9f9f9"
-                android:padding="10dp"
-                app:ael_duration="100"
-                app:ael_expanded="false"
-                app:ael_interpolator="accelerate"
-                app:ael_orientation="vertical">
+                android:layout_below="@+id/results_breakdown"
+                app:el_duration="1000"
+                app:el_expanded="false"
+                android:background="#faf9f9">
 
                 <TextView
                     android:id="@+id/results_game_breakdown_text"
@@ -901,7 +902,7 @@
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="2dp" />
 
-            </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+            </net.cachapa.expandablelayout.ExpandableLayout>
 
 
             <View

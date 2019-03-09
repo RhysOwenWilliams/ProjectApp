@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/cairo_semibold</item>
+        <item>@font/droid_sans</item>
+        <item>@font/gafata</item>
+        <item>@font/metrophobic</item>
+        <item>@font/oxygen</item>
+        <item>@font/roboto_bold</item>
+        <item>@font/tauri</item>
+        <item>@font/voces</item>
+        <item>@font/yantramanav</item>
+    </array>
+</resources>

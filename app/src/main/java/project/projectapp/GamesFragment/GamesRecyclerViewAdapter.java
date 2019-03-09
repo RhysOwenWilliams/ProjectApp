@@ -20,6 +20,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,8 +57,6 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
     private final String GAME_BREAKDOWN = "gameBreakdown";
     private final String GAME_ID = "gameIds";
 
-    private RelativeLayout fixtureView, liveView;
-    private LinearLayout resultsView;
 
     private ArrayList<String> team1Names, team2Names, team1Logos, team2Logos, team1Nicknames,
             team2Nicknames, gameDates, gameTimes, gameTypes, gameLocations, team1Scores,
@@ -120,10 +119,6 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
                 .inflate(R.layout.layout_fixtures_results_list, parent, false);
         ViewHolder holder = new ViewHolder(view);
 
-        fixtureView = view.findViewById(R.id.fixtures_display);
-        resultsView = view.findViewById(R.id.results_display);
-        liveView = view.findViewById(R.id.live_display);
-
         return holder;
     }
 
@@ -133,29 +128,35 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         holder.team2Nickname.setText(team2Nicknames.get(position));
         holder.team1Record.setText(team1Wins.get(position) + " - " + team1Losses.get(position));
         holder.team2Record.setText(team2Wins.get(position) + " - " + team2Losses.get(position));
+
         Glide.with(context)
                 .load(team1Logos.get(position))
+                .apply(new RequestOptions().override(200, 200))
                 .into(holder.team1);
         Glide.with(context)
                 .load(team2Logos.get(position))
+                .apply(new RequestOptions().override(200, 200))
                 .into(holder.team2);
 
         if(gameTypes.get(position).equals("Result")){
-            resultsView.setVisibility(View.VISIBLE);
+            holder.resultsView.setVisibility(View.VISIBLE);
+            holder.fixtureView.setVisibility(View.INVISIBLE);
             holder.team1Score.setText(team1Scores.get(position));
             holder.team2Score.setText(team2Scores.get(position));
             holder.finished.setVisibility(View.VISIBLE);
         } else if (gameTypes.get(position).equals("Live")){
-            resultsView.setVisibility(View.VISIBLE);
-            liveView.setVisibility(View.VISIBLE);
+            holder.resultsView.setVisibility(View.VISIBLE);
+            holder.liveView.setVisibility(View.VISIBLE);
             holder.team1Score.setText(team1Scores.get(position));
             holder.team2Score.setText(team2Scores.get(position));
         } else {
-            fixtureView.setVisibility(View.VISIBLE);
+            holder.fixtureView.setVisibility(View.VISIBLE);
             holder.time.setText(gameTimes.get(position));
             holder.date.setText(gameDates.get(position));
         }
 
+        // Result has multiple parameters since we only need to access the database data once since
+        // this data doesn't change, Live games data however does, so we only pass the id
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,21 +166,25 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
                             team1Nicknames.get(position), team2Nicknames.get(position),
                             team1Logos.get(position), team2Logos.get(position),
                             team1Abbreviations.get(position), team2Abbreviations.get(position),
-                            team1ScoresQ1.get(position),
-                            team1ScoresQ2.get(position), team1ScoresQ3.get(position),
-                            team1ScoresQ4.get(position), team2ScoresQ1.get(position),
-                            team2ScoresQ2.get(position), team2ScoresQ3.get(position),
-                            team2ScoresQ4.get(position), gameBreakdowns.get(position),
-                            gameIds.get(position));
+                            team1ScoresQ1.get(position), team1ScoresQ2.get(position),
+                            team1ScoresQ3.get(position), team1ScoresQ4.get(position),
+                            team2ScoresQ1.get(position),team2ScoresQ2.get(position),
+                            team2ScoresQ3.get(position),team2ScoresQ4.get(position),
+                            gameBreakdowns.get(position), gameIds.get(position));
                 } else if (gameTypes.get(position).equals("Live")){
-                    Intent live = new Intent(context, LiveActivity.class);
-                    context.startActivity(live);
+                    gameLive(gameIds.get(position));
                 } else {
                     Toast.makeText(context, "Clicked: " + gameTypes.get(position), Toast.LENGTH_SHORT).show();
                 }
+                Log.d("activityruntime", "Option selected");
             }
         });
     }
+
+    private void gameLive(String gameId) {
+        Intent live = new Intent(context, LiveActivity.class);
+        live.putExtra(GAME_ID, gameId);
+        context.startActivity(live);   }
 
     private void gameResult(String team1, String team2, String team1Score, String team2Score,
                             String team1Nickname, String team2Nickname, String team1Logo,
@@ -220,6 +225,9 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         RelativeLayout parentLayout;
+        RelativeLayout fixtureView;
+        RelativeLayout liveView;
+        LinearLayout resultsView;
         ImageView team1;
         ImageView team2;
         TextView team1Nickname;
@@ -236,6 +244,9 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             parentLayout = itemView.findViewById(R.id.fixture_results_list_parent);
+            fixtureView = itemView.findViewById(R.id.fixtures_display);
+            resultsView = itemView.findViewById(R.id.results_display);
+            liveView = itemView.findViewById(R.id.live_display);
             team1 = itemView.findViewById(R.id.fixture_results_list_team_1);
             team2 = itemView.findViewById(R.id.fixture_results_list_team_2);
             team1Nickname = itemView.findViewById(R.id.fixture_results_list_team_1_nickname);

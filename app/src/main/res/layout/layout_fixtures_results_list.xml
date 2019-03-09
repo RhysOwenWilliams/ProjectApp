@@ -139,10 +139,11 @@
                     android:id="@+id/fixture_results_list_team_2_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nickname"
                     android:layout_below="@id/fixture_results_list_team_2"
                     android:layout_centerInParent="true"
-                    android:textStyle="bold"/>
+
+                    android:textStyle="bold"
+                    android:text="Nickname"/>
 
                 <TextView
                     android:id="@+id/fixture_results_list_team_2_record"

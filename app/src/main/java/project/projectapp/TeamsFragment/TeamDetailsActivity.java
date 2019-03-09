@@ -40,7 +40,7 @@ public class TeamDetailsActivity extends AppCompatActivity {
     private String retrievedTeamName, retrievedTeamWins, retrievedTeamLosses, retrievedTeamLogo,
             retrievedTeamNickname;
 
-    private Animation slideUp;
+    private Animation fadeIn, fadeOut;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +55,8 @@ public class TeamDetailsActivity extends AppCompatActivity {
         redBar = findViewById(R.id.team_details_red_bar);
 
         information = findViewById(R.id.team_details_toolbar_information);
-        slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
         toolbar = findViewById(R.id.team_details_toolbar);
         setSupportActionBar(toolbar);
@@ -111,11 +112,11 @@ public class TeamDetailsActivity extends AppCompatActivity {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     information.setVisibility(View.VISIBLE);
-                    redBar.setVisibility(View.VISIBLE);
-                    information.startAnimation(slideUp);
+                    information.startAnimation(fadeIn);
                     isShow = true;
                 } else if(isShow) {
                     information.setVisibility(View.INVISIBLE);
+                    information.startAnimation(fadeOut);
                     isShow = false;
                 }
             }
