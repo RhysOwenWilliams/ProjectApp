@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/resume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resume game to"
+        android:gravity="center"/>
+    <TextView
+        android:layout_below="@id/resume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="continue"
+        android:gravity="center"/>
+</RelativeLayout>

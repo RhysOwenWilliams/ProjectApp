@@ -3,4 +3,11 @@
     <string name="app_label">SWBA</string>
     <string name="open">Opened</string>
     <string name="closed">Closed</string>
+
+
+    <string name="how_to_use">
+        •	Utilise the quarter tracker at the bottom of the screen. Begin by starting the game, once this has begun you will be given the option to pause and resume the quarter, allowing you to keep track of the quarters while keeping track of the scores.
+    \n\n•	Use the tabs to select a team whose score you want to change, select a player then there will be a dropdown menu where you can increment the various player data (scores and fouls)
+    \n\n•	In the case of 2 and 3 points, the value displayed will be the number of 2 or 3 points the player has scored and not the total points with that form of scoring. For example, if a player has scored 2 3-pointers, then this will be displayed as 2 instead of 6
+    </string>
 </resources>

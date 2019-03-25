@@ -45,12 +45,12 @@ public class GamesFragment extends Fragment {
     private boolean firstOpened;
     private int position;
 
-    private ArrayList<String> team1Logos, team2Logos, gameDates, gameTimes, gameTypes, gameLocations,
+    private ArrayList<String> team1Logos, team2Logos, gameDates, gameTimes, gameTypes, gameCurrentQuarters,
             team1Nicknames, team2Nicknames, team1Scores, team2Scores, team1Wins, team1Losses,
             team2Wins, team2Losses, team1Abbreviations, team2Abbreviations, nonTeamSpecificDatas,
             gameBreakdowns, allTeams, team1, team2, allScores, team1ScoresQ1, team1ScoresQ2,
             team1ScoresQ3, team1ScoresQ4, team2ScoresQ1, team2ScoresQ2, team2ScoresQ3, team2ScoresQ4,
-            gameIds;
+            gameIds, team1Colours, team2Colours;
 
     private ProgressBar progressBar;
 
@@ -69,7 +69,7 @@ public class GamesFragment extends Fragment {
         gameDates = new ArrayList<>();
         gameTimes = new ArrayList<>();
         gameTypes = new ArrayList<>();
-        gameLocations = new ArrayList<>();
+        gameCurrentQuarters = new ArrayList<>();
         team1Nicknames = new ArrayList<>();
         team2Nicknames = new ArrayList<>();
         team1Scores = new ArrayList<>();
@@ -95,6 +95,8 @@ public class GamesFragment extends Fragment {
         team2ScoresQ3 = new ArrayList<>();
         team2ScoresQ4 = new ArrayList<>();
         gameIds = new ArrayList<>();
+        team1Colours = new ArrayList<>();
+        team2Colours = new ArrayList<>();
 
         progressBar = view.findViewById(R.id.progress_bar_games);
         progressBar.setIndeterminate(true);
@@ -111,7 +113,7 @@ public class GamesFragment extends Fragment {
         gameDates.clear();
         gameTimes.clear();
         gameTypes.clear();
-        gameLocations.clear();
+        gameCurrentQuarters.clear();
         team1Nicknames.clear();
         team2Nicknames.clear();
         team1Scores.clear();
@@ -136,6 +138,8 @@ public class GamesFragment extends Fragment {
         team2ScoresQ2.clear();
         team2ScoresQ3.clear();
         team2ScoresQ4.clear();
+        team1Colours.clear();
+        team2Colours.clear();
     }
 
     private void getGames(final View view){
@@ -202,9 +206,9 @@ public class GamesFragment extends Fragment {
     private void setNonTeamData() {
         for(int i = 0; i < nonTeamSpecificDatas.size(); i+=6){
             gameBreakdowns.add(nonTeamSpecificDatas.get(i).replace(ALLOW_COMMA, ","));
-            gameDates.add(nonTeamSpecificDatas.get(i+1));
-            gameIds.add(nonTeamSpecificDatas.get(i+2));
-            gameLocations.add(formatLocation(nonTeamSpecificDatas.get(i+3)));
+            gameCurrentQuarters.add(nonTeamSpecificDatas.get(i+1));
+            gameDates.add(nonTeamSpecificDatas.get(i+2));
+            gameIds.add(nonTeamSpecificDatas.get(i+3));
             gameTimes.add(nonTeamSpecificDatas.get(i+4));
             gameTypes.add(nonTeamSpecificDatas.get(i+5));
         }
@@ -259,6 +263,9 @@ public class GamesFragment extends Fragment {
                                 if (teamData.getKey().equals("Abbreviation")) {
                                     team1Abbreviations.add(teamData.getValue().toString());
                                 }
+                                if (teamData.getKey().equals("Colour")) {
+                                    team1Colours.add(teamData.getValue().toString());
+                                }
                             }
                         }
                     }
@@ -282,6 +289,9 @@ public class GamesFragment extends Fragment {
                                 if(teamData.getKey().equals("Abbreviation")){
                                     team2Abbreviations.add(teamData.getValue().toString());
                                 }
+                                if (teamData.getKey().equals("Colour")) {
+                                    team2Colours.add(teamData.getValue().toString());
+                                }
                             }
                         }
                     }
@@ -293,7 +303,6 @@ public class GamesFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-        gameDateToValue();
     }
 
     private void clearTeamData() {
@@ -303,20 +312,14 @@ public class GamesFragment extends Fragment {
         team2Losses.clear();
     }
 
-    private String formatLocation(String data){
-        String replaceSemiColon = data.replace(";", ",");
-        return replaceSemiColon;
-    }
-
-
     private void recyclerViewSetup(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_games);
         GamesRecyclerViewAdapter adapter = new GamesRecyclerViewAdapter(getContext(), team1, team2,
                 team1Logos, team2Logos, team1Nicknames, team2Nicknames, gameDates, gameTimes,
-                gameTypes, gameLocations, team1Scores, team2Scores, team1Wins, team1Losses,
+                gameTypes, gameCurrentQuarters, team1Scores, team2Scores, team1Wins, team1Losses,
                 team2Wins, team2Losses, team1Abbreviations, team2Abbreviations, team1ScoresQ1,
                 team1ScoresQ2, team1ScoresQ3, team1ScoresQ4, team2ScoresQ1, team2ScoresQ2,
-                team2ScoresQ3, team2ScoresQ4, gameBreakdowns, gameIds);
+                team2ScoresQ3, team2ScoresQ4, gameBreakdowns, gameIds, team1Colours, team2Colours);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
@@ -351,80 +354,5 @@ public class GamesFragment extends Fragment {
                 position = percentage/22; //20 represents each cell, and a further 2 for the gap
             }
         });
-    }
-
-
-    /**
-     * Tests the game date against todays date to change games from fixtures to results
-     */
-    //TODO: this can be improved by instead waiting for the 'official' to finish inserting the game score and on completion, change it to a result
-    //TODO: extending on this, once the official has chosen to start inserting scores, it changes to a live game
-    private void gameDateToValue() {
-        for(String date : gameDates){
-            String[] splitDate = date.split(" ");
-            String month = splitDate[0];
-            String day = splitDate[1];
-            String year = splitDate[2];
-
-            String formatted = year + formatNumber(monthNameToValue(month)) + day;
-
-            if(Integer.valueOf(formatted) > Integer.valueOf(getDateTimeAndFormat())){
-                //Log.d("teamdata", "future date");
-                //Log.d("teamdata", formatted);
-                //Log.d("teamdata", getDateTimeAndFormat());
-            } else {
-                //Log.d("teamdata", "past date");
-                //Log.d("teamdata", formatted);
-                //Log.d("teamdata", getDateTimeAndFormat());
-            }
-
-        }
-    }
-
-    private String getDateTimeAndFormat() {
-        String todayDateTime = String.valueOf(Calendar.getInstance().getTime());
-
-        // Calendar.getInstance().getTime() returns a long string of various data for today, split and access what we need
-        String[] splitTime = todayDateTime.split(" ");
-        String formattedDate = splitTime[5] + formatNumber(monthNameToValue(splitTime[1])) + splitTime[2];
-        return formattedDate;
-    }
-
-    private String formatNumber(int number){
-        if(String.valueOf(number).length() == 1) {
-            String value = "0" + String.valueOf(number);
-            return value;
-        }
-        return null;
-    }
-
-    private int monthNameToValue(String month){
-        switch(month){
-            case "Jan":
-                return 1;
-            case "Feb":
-                return 2;
-            case "Mar":
-                return 3;
-            case "Apr":
-                return 4;
-            case "May":
-                return 5;
-            case "Jun":
-                return 6;
-            case "Jul":
-                return 7;
-            case "Aug":
-                return 8;
-            case "Sep":
-                return 9;
-            case "Oct":
-                return 10;
-            case "Nov":
-                return 11;
-            case "Dec":
-                return 12;
-        }
-        return 0;
     }
 }

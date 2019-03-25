@@ -60,7 +60,7 @@
             </LinearLayout>
 
             <View
-                android:id="@+id/team_details_red_bar"
+                android:id="@+id/team_details_split_bar"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/colorAccent"
@@ -109,7 +109,8 @@
                 android:id="@+id/team_details_tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom" />
+                android:layout_gravity="bottom"
+                app:tabIndicatorHeight="2dp"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

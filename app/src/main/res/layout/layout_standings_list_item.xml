@@ -18,8 +18,8 @@
 
     <ImageView
         android:id="@+id/image_view_standings"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:src="@drawable/cardiff_met_archers_2nds"
         android:layout_margin="10dp"
         android:layout_toRightOf="@+id/text_view_position_standings"
@@ -38,7 +38,7 @@
     <View
         android:id="@+id/view_standings"
         android:layout_width="1dp"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         android:layout_marginLeft="200dp"
         android:background="#b5b3b2" />
 

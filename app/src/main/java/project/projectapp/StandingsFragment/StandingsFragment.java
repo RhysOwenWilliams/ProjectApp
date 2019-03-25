@@ -109,7 +109,7 @@ public class StandingsFragment extends Fragment {
 
         for(int i = 0; i < splitData.length; i++){
             setWinsLoss(splitData[6], splitData[3]);
-            String[] split = splitData[9].split("=", 2);
+            String[] split = splitData[10].split("=", 2);
             logo = split[1];
         }
     }

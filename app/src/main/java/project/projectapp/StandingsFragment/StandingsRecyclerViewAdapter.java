@@ -29,16 +29,16 @@ public class StandingsRecyclerViewAdapter extends RecyclerView.Adapter<Standings
 
     private Context context;
 
-    public StandingsRecyclerViewAdapter(Context thisContext, ArrayList<String> names, ArrayList<String> wins,
-                                        ArrayList<String> losses, ArrayList<String> winPercentage,
-                                        ArrayList<String> logo, ArrayList<String> totalPoints) {
-        context = thisContext;
-        teamNames = names;
-        teamWins = wins;
-        teamLosses = losses;
-        teamWinPercentages = winPercentage;
-        teamLogo = logo;
-        teamTotalPoints = totalPoints;
+    public StandingsRecyclerViewAdapter(Context context, ArrayList<String> teamNames, ArrayList<String> teamWins,
+                                        ArrayList<String> teamLosses, ArrayList<String> teamWinPercentages,
+                                        ArrayList<String> teamLogo, ArrayList<String> teamTotalPoints) {
+        this.context = context;
+        this.teamNames = teamNames;
+        this.teamWins = teamWins;
+        this.teamLosses = teamLosses;
+        this.teamWinPercentages = teamWinPercentages;
+        this.teamLogo = teamLogo;
+        this.teamTotalPoints = teamTotalPoints;
     }
 
     @NonNull
@@ -74,7 +74,7 @@ public class StandingsRecyclerViewAdapter extends RecyclerView.Adapter<Standings
                 .load(teamLogo.get(position))
                 .into(holder.logo);
 
-        // Removes the click animation since it appears like the click should do something otherwide
+        // Removes the click animation since it appears like the click should do something otherwiSe
         holder.parentLayout.setClickable(false);
     }
 

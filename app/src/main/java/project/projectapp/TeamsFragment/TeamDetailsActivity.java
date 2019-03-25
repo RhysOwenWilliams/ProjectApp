@@ -1,5 +1,6 @@
 package project.projectapp.TeamsFragment;
 
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,15 +31,18 @@ public class TeamDetailsActivity extends AppCompatActivity {
     private static final String TEAM_LOSSES = "teamLosses";
     private static final String TEAM_LOGO = "teamLogo";
     private static final String TEAM_NICKNAME = "teamNickname";
+    private static final String TEAM_COLOUR = "teamColour";
 
     private ImageView teamLogo, toolbarTeamLogo;
     private TextView teamName, teamRecord, teamNickname;
     private Toolbar toolbar;
+    private TabLayout tabs;
     private LinearLayout information;
-    private View redBar;
+    private View splitBar;
 
+    private int colour;
     private String retrievedTeamName, retrievedTeamWins, retrievedTeamLosses, retrievedTeamLogo,
-            retrievedTeamNickname;
+            retrievedTeamNickname, retrievedColour;
 
     private Animation fadeIn, fadeOut;
 
@@ -52,7 +56,7 @@ public class TeamDetailsActivity extends AppCompatActivity {
         teamName = findViewById(R.id.team_details_team_name);
         teamRecord = findViewById(R.id.team_details_record);
         teamNickname = findViewById(R.id.team_details_toolbar_nickname);
-        redBar = findViewById(R.id.team_details_red_bar);
+        splitBar = findViewById(R.id.team_details_split_bar);
 
         information = findViewById(R.id.team_details_toolbar_information);
         fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
@@ -71,7 +75,7 @@ public class TeamDetailsActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.team_details_view_pager);
         setupViewPager(viewPager);
 
-        TabLayout tabs = findViewById(R.id.team_details_tab_layout);
+        tabs = findViewById(R.id.team_details_tab_layout);
         tabs.setupWithViewPager(viewPager);
 
         retrieveTeamDetails();
@@ -84,6 +88,7 @@ public class TeamDetailsActivity extends AppCompatActivity {
         retrievedTeamLosses = getIntent().getStringExtra(TEAM_LOSSES);
         retrievedTeamLogo = getIntent().getStringExtra(TEAM_LOGO);
         retrievedTeamNickname = getIntent().getStringExtra(TEAM_NICKNAME);
+        retrievedColour = getIntent().getStringExtra(TEAM_COLOUR);
         setTeamDetails();
     }
 
@@ -97,6 +102,10 @@ public class TeamDetailsActivity extends AppCompatActivity {
         teamName.setText(retrievedTeamName);
         teamRecord.setText(retrievedTeamWins + " - " + retrievedTeamLosses);
         teamNickname.setText(retrievedTeamNickname);
+
+        colour = Color.parseColor(retrievedColour);
+        splitBar.setBackgroundColor(colour);
+        tabs.setSelectedTabIndicatorColor(colour);
     }
 
     private void addInfoWhenCollapsed() {

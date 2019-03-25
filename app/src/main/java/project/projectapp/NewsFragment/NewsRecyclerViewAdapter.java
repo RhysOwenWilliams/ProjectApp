@@ -36,20 +36,20 @@ public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerVi
 
     private Context context;
 
-    public NewsRecyclerViewAdapter(Context thisContext, ArrayList<String> image,
-                                   ArrayList<String> username, ArrayList<String> date,
-                                   ArrayList<String> time, ArrayList<String> title,
-                                   ArrayList<String> content, ArrayList<String> postId,
-                                   Map<String, Integer> commentCount){
-        context = thisContext;
-        images = image;
-        usernames = username;
-        dates = date;
-        times = time;
-        titles = title;
-        contents = content;
-        postIds = postId;
-        postIdsAndCommentCount = commentCount;
+    public NewsRecyclerViewAdapter(Context context, ArrayList<String> images,
+                                   ArrayList<String> usernames, ArrayList<String> dates,
+                                   ArrayList<String> times, ArrayList<String> titles,
+                                   ArrayList<String> contents, ArrayList<String> postIds,
+                                   Map<String, Integer> postIdsAndCommentCount){
+        this.context = context;
+        this.images = images;
+        this.usernames = usernames;
+        this.dates = dates;
+        this.times = times;
+        this.titles = titles;
+        this.contents = contents;
+        this.postIds = postIds;
+        this.postIdsAndCommentCount = postIdsAndCommentCount;
     }
 
     @NonNull

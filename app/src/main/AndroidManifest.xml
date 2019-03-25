@@ -68,6 +68,12 @@
             android:name=".GamesFragment.GameLive.LiveActivity">
         </activity>
         <activity
+            android:name=".GamesFragment.GameLive.OfficiateGame.OfficiateGameActivity">
+        </activity>
+        <activity
+            android:name=".GamesFragment.GameLive.OfficiateGame.BreakdownActivity">
+        </activity>
+        <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

@@ -1,14 +1,9 @@
 package project.projectapp.GamesFragment;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +11,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,8 +22,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import project.projectapp.GamesFragment.GameLive.LiveActivity;
+import project.projectapp.GamesFragment.GameLive.OfficiateGame.OfficiateGameActivity;
 import project.projectapp.GamesFragment.GameResult.ResultsActivity;
 import project.projectapp.R;
 
@@ -56,60 +52,69 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
     private final String TEAM_2_SCORE_Q4 = "team2ScoreQ4";
     private final String GAME_BREAKDOWN = "gameBreakdown";
     private final String GAME_ID = "gameIds";
+    private final String TEAM_1_COLOURS = "team1Colours";
+    private final String TEAM_2_COLOURS = "team2Colours";
 
 
     private ArrayList<String> team1Names, team2Names, team1Logos, team2Logos, team1Nicknames,
-            team2Nicknames, gameDates, gameTimes, gameTypes, gameLocations, team1Scores,
+            team2Nicknames, gameDates, gameTimes, gameTypes, gameCurrentQuarters, team1Scores,
             team2Scores, team1Wins, team1Losses, team2Wins, team2Losses, team1Abbreviations,
             team2Abbreviations, team1ScoresQ1, team1ScoresQ2, team1ScoresQ3, team1ScoresQ4,
-            team2ScoresQ1, team2ScoresQ2, team2ScoresQ3, team2ScoresQ4, gameBreakdowns, gameIds;
+            team2ScoresQ1, team2ScoresQ2, team2ScoresQ3, team2ScoresQ4, gameBreakdowns, gameIds,
+            team1Colours, team2Colours;
 
     private Context context;
 
-    public GamesRecyclerViewAdapter(Context thisContext, ArrayList<String> team1Name,
-                                    ArrayList<String> team2Name, ArrayList<String> team1Logo,
-                                    ArrayList<String> team2Logo, ArrayList<String> team1,
-                                    ArrayList<String> team2, ArrayList<String> gameDate,
-                                    ArrayList<String> gameTime, ArrayList<String> gameType,
-                                    ArrayList<String> gameLocation, ArrayList<String> team1Score,
-                                    ArrayList<String> team2Score, ArrayList<String> team1Win,
-                                    ArrayList<String> team1Loss, ArrayList<String> team2Win,
-                                    ArrayList<String> team2Loss, ArrayList<String> team1Abbreviation,
-                                    ArrayList<String> team2Abbreviation, ArrayList<String> team1ScoreQ1,
-                                    ArrayList<String> team1ScoreQ2, ArrayList<String> team1ScoreQ3,
-                                    ArrayList<String> team1ScoreQ4, ArrayList<String> team2ScoreQ1,
-                                    ArrayList<String> team2ScoreQ2, ArrayList<String> team2ScoreQ3,
-                                    ArrayList<String> team2ScoreQ4, ArrayList<String> gameBreakdown,
-                                    ArrayList<String> gameId){
-        context = thisContext;
-        team1Names = team1Name;
-        team2Names = team2Name;
-        team1Logos = team1Logo;
-        team2Logos = team2Logo;
-        team1Nicknames = team1;
-        team2Nicknames = team2;
-        gameDates = gameDate;
-        gameTimes = gameTime;
-        gameTypes = gameType;
-        gameLocations = gameLocation;
-        team1Scores = team1Score;
-        team2Scores = team2Score;
-        team1Wins = team1Win;
-        team1Losses = team1Loss;
-        team2Wins = team2Win;
-        team2Losses = team2Loss;
-        team1Abbreviations = team1Abbreviation;
-        team2Abbreviations = team2Abbreviation;
-        team1ScoresQ1 = team1ScoreQ1;
-        team1ScoresQ2 = team1ScoreQ2;
-        team1ScoresQ3 = team1ScoreQ3;
-        team1ScoresQ4 = team1ScoreQ4;
-        team2ScoresQ1 = team2ScoreQ1;
-        team2ScoresQ2 = team2ScoreQ2;
-        team2ScoresQ3 = team2ScoreQ3;
-        team2ScoresQ4 = team2ScoreQ4;
-        gameBreakdowns = gameBreakdown;
-        gameIds = gameId;
+    private DatabaseReference databaseReference;
+    private FirebaseAuth firebaseAuth;
+
+    public GamesRecyclerViewAdapter(Context context, ArrayList<String> team1Names,
+                                    ArrayList<String> team2Names, ArrayList<String> team1Logos,
+                                    ArrayList<String> team2Logos, ArrayList<String> team1Nicknames,
+                                    ArrayList<String> team2Nicknames, ArrayList<String> gameDates,
+                                    ArrayList<String> gameTimes, ArrayList<String> gameTypes,
+                                    ArrayList<String> gameCurrentQuarters, ArrayList<String> team1Scores,
+                                    ArrayList<String> team2Scores, ArrayList<String> team1Wins,
+                                    ArrayList<String> team1Losses, ArrayList<String> team2Wins,
+                                    ArrayList<String> team2Losses, ArrayList<String> team1Abbreviations,
+                                    ArrayList<String> team2Abbreviations, ArrayList<String> team1ScoresQ1,
+                                    ArrayList<String> team1ScoresQ2, ArrayList<String> team1ScoresQ3,
+                                    ArrayList<String> team1ScoresQ4, ArrayList<String> team2ScoresQ1,
+                                    ArrayList<String> team2ScoresQ2, ArrayList<String> team2ScoresQ3,
+                                    ArrayList<String> team2ScoresQ4, ArrayList<String> gameBreakdowns,
+                                    ArrayList<String> gameIds, ArrayList<String> team1Colours,
+                                    ArrayList<String> team2Colours){
+        this.context = context;
+        this.team1Names = team1Names;
+        this.team2Names = team2Names;
+        this.team1Logos = team1Logos;
+        this.team2Logos = team2Logos;
+        this.team1Nicknames = team1Nicknames;
+        this.team2Nicknames = team2Nicknames;
+        this.gameDates = gameDates;
+        this.gameTimes = gameTimes;
+        this.gameTypes = gameTypes;
+        this.gameCurrentQuarters = gameCurrentQuarters;
+        this.team1Scores = team1Scores;
+        this.team2Scores = team2Scores;
+        this.team1Wins = team1Wins;
+        this.team1Losses = team1Losses;
+        this.team2Wins = team2Wins;
+        this.team2Losses = team2Losses;
+        this.team1Abbreviations = team1Abbreviations;
+        this.team2Abbreviations = team2Abbreviations;
+        this.team1ScoresQ1 = team1ScoresQ1;
+        this.team1ScoresQ2 = team1ScoresQ2;
+        this.team1ScoresQ3 = team1ScoresQ3;
+        this.team1ScoresQ4 = team1ScoresQ4;
+        this.team2ScoresQ1 = team2ScoresQ1;
+        this.team2ScoresQ2 = team2ScoresQ2;
+        this.team2ScoresQ3 = team2ScoresQ3;
+        this.team2ScoresQ4 = team2ScoresQ4;
+        this.gameBreakdowns = gameBreakdowns;
+        this.gameIds = gameIds;
+        this.team1Colours =  team1Colours;
+        this.team2Colours = team2Colours;
     }
 
     @NonNull
@@ -118,7 +123,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.layout_fixtures_results_list, parent, false);
         ViewHolder holder = new ViewHolder(view);
-
+        firebaseAuth = FirebaseAuth.getInstance();
         return holder;
     }
 
@@ -149,10 +154,12 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
             holder.liveView.setVisibility(View.VISIBLE);
             holder.team1Score.setText(team1Scores.get(position));
             holder.team2Score.setText(team2Scores.get(position));
+            holder.liveCurrentQuarter.setText("LIVE - " + gameCurrentQuarters.get(position));
         } else {
             holder.fixtureView.setVisibility(View.VISIBLE);
             holder.time.setText(gameTimes.get(position));
             holder.date.setText(gameDates.get(position));
+            checkIfGameReadyEveryMinute(holder, position);
         }
 
         // Result has multiple parameters since we only need to access the database data once since
@@ -170,21 +177,72 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
                             team1ScoresQ3.get(position), team1ScoresQ4.get(position),
                             team2ScoresQ1.get(position),team2ScoresQ2.get(position),
                             team2ScoresQ3.get(position),team2ScoresQ4.get(position),
-                            gameBreakdowns.get(position), gameIds.get(position));
+                            gameBreakdowns.get(position), gameIds.get(position),
+                            team1Colours.get(position), team2Colours.get(position));
                 } else if (gameTypes.get(position).equals("Live")){
                     gameLive(gameIds.get(position));
-                } else {
-                    Toast.makeText(context, "Clicked: " + gameTypes.get(position), Toast.LENGTH_SHORT).show();
                 }
-                Log.d("activityruntime", "Option selected");
             }
         });
+    }
+    /**
+     * Checks if the current signed in user is an official and if so, allows them further access to
+     * create a new post
+     */
+    private void authenticateUser(final ViewHolder holder, final int position) {
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Roles");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataSnapshot signedInId = dataSnapshot.child(firebaseAuth.getUid());
+                if(signedInId.hasChild("isOfficial")){
+                    DataSnapshot data = signedInId.child("isOfficial");
+                    Boolean roleValue = Boolean.valueOf(data.getValue().toString());
+
+                    if(roleValue){
+                        holder.officiateGame.setVisibility(View.VISIBLE);
+                        holder.officiateGame.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                officiateGame(position);
+                            }
+                        });
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+    }
+
+    private void checkIfGameReadyEveryMinute(final ViewHolder holder, final int position) {
+        if(gameDateToValue(gameDates.get(position), gameTimes.get(position))){
+            authenticateUser(holder, position);
+        } else {
+            holder.officiateGame.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void officiateGame(int position) {
+        Intent officiate = new Intent(context, OfficiateGameActivity.class);
+        officiate.putExtra(GAME_ID, gameIds.get(position));
+        officiate.putExtra(TEAM_1_ABBREVIATION, team1Abbreviations.get(position));
+        officiate.putExtra(TEAM_2_ABBREVIATION, team2Abbreviations.get(position));
+        officiate.putExtra(TEAM_1_LOGO, team1Logos.get(position));
+        officiate.putExtra(TEAM_2_LOGO, team2Logos.get(position));
+        officiate.putExtra(TEAM_1_NICKNAME, team1Nicknames.get(position));
+        officiate.putExtra(TEAM_2_NICKNAME, team2Nicknames.get(position));
+        context.startActivity(officiate);
     }
 
     private void gameLive(String gameId) {
         Intent live = new Intent(context, LiveActivity.class);
         live.putExtra(GAME_ID, gameId);
-        context.startActivity(live);   }
+        context.startActivity(live);
+    }
 
     private void gameResult(String team1, String team2, String team1Score, String team2Score,
                             String team1Nickname, String team2Nickname, String team1Logo,
@@ -192,7 +250,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
                             String team1ScoreQ1, String team1ScoreQ2, String team1ScoreQ3,
                             String team1ScoreQ4, String team2ScoreQ1, String team2ScoreQ2,
                             String team2ScoreQ3, String team2ScoreQ4, String gameBreakdown,
-                            String gameId){
+                            String gameId, String team1Colour, String team2Colour){
         Intent result = new Intent(context, ResultsActivity.class);
         result.putExtra(TEAM_1, team1);
         result.putExtra(TEAM_2, team2);
@@ -214,6 +272,8 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         result.putExtra(TEAM_2_SCORE_Q4, team2ScoreQ4);
         result.putExtra(GAME_BREAKDOWN, gameBreakdown);
         result.putExtra(GAME_ID, gameId);
+        result.putExtra(TEAM_1_COLOURS, team1Colour);
+        result.putExtra(TEAM_2_COLOURS, team2Colour);
         context.startActivity(result);
     }
 
@@ -227,6 +287,7 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         RelativeLayout parentLayout;
         RelativeLayout fixtureView;
         RelativeLayout liveView;
+        RelativeLayout officiateGame;
         LinearLayout resultsView;
         ImageView team1;
         ImageView team2;
@@ -239,13 +300,14 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
         TextView time;
         TextView date;
         TextView finished;
-        TextView location;
+        TextView liveCurrentQuarter;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             parentLayout = itemView.findViewById(R.id.fixture_results_list_parent);
             fixtureView = itemView.findViewById(R.id.fixtures_display);
             resultsView = itemView.findViewById(R.id.results_display);
+            officiateGame = itemView.findViewById(R.id.fixture_results_officiate);
             liveView = itemView.findViewById(R.id.live_display);
             team1 = itemView.findViewById(R.id.fixture_results_list_team_1);
             team2 = itemView.findViewById(R.id.fixture_results_list_team_2);
@@ -258,6 +320,115 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
             time = itemView.findViewById(R.id.fixture_results_list_time);
             date = itemView.findViewById(R.id.fixture_results_list_date);
             finished = itemView.findViewById(R.id.fixture_results_finished);
+            liveCurrentQuarter = itemView.findViewById(R.id.live_current_quarter);
         }
+    }
+
+    /**
+     * Tests the game date against todays date to change games from fixtures to results
+     */
+
+    //TODO: problem here is that it doesn't know the max is 60 since it will check up to 100, need to format it for an actual time
+    private boolean gameDateToValue(String date, String time) {
+        String[] splitDate = date.split(" ");
+        String month = splitDate[0];
+        String day = splitDate[1];
+        String year = splitDate[2];
+
+        String formatted = year + formatNumber(monthNameToValue(month)) + day;
+
+        if(formatted.equals(getDateFormatted())){
+            if(confirmTime(getTimeFormatted(), time)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param currentTime the current time
+     * @param gameTime time that the game will be played
+     * @return true if the game is in 10 minutes time, false otherwise
+     */
+    private Boolean confirmTime(String currentTime, String gameTime){
+        String currentSplit = currentTime.substring(0,2);
+        String gameSplit = gameTime.substring(0,2);
+
+        if(Integer.valueOf(gameSplit) - Integer.valueOf(currentSplit) == 1){
+            int checkTimes = Integer.valueOf(gameTime.replace(":", ""))
+                    - (Integer.valueOf(currentTime)+40);
+            if(checkTimes <= 10 /*&& checkTimes >=0*/){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            int checkTimes = Integer.valueOf(gameTime.replace(":", ""))
+                    - Integer.valueOf(currentTime);
+            if(checkTimes <= 10 /*&& checkTimes >=0*/){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private String getTimeFormatted() {
+        String todayDateTime = String.valueOf(Calendar.getInstance().getTime());
+
+        // Calendar.getInstance().getTime() returns a long string of various data for today, split and access what we need
+        String[] splitTime = todayDateTime.split(" ");
+        String retrievedTime = splitTime[3];
+        String[] formatTime = retrievedTime.split(":");
+        String formattedTime = formatTime[0] + formatTime[1];
+        return formattedTime;
+    }
+
+    private String getDateFormatted() {
+        String todayDateTime = String.valueOf(Calendar.getInstance().getTime());
+
+        // Calendar.getInstance().getTime() returns a long string of various data for today, split and access what we need
+        String[] splitTime = todayDateTime.split(" ");
+        String formattedDate = splitTime[5] + formatNumber(monthNameToValue(splitTime[1])) + splitTime[2];
+        return formattedDate;
+    }
+
+    private String formatNumber(int number){
+        if(String.valueOf(number).length() == 1) {
+            String value = "0" + String.valueOf(number);
+            return value;
+        }
+        return null;
+    }
+
+    private int monthNameToValue(String month){
+        switch(month){
+            case "Jan":
+                return 1;
+            case "Feb":
+                return 2;
+            case "Mar":
+                return 3;
+            case "Apr":
+                return 4;
+            case "May":
+                return 5;
+            case "Jun":
+                return 6;
+            case "Jul":
+                return 7;
+            case "Aug":
+                return 8;
+            case "Sep":
+                return 9;
+            case "Oct":
+                return 10;
+            case "Nov":
+                return 11;
+            case "Dec":
+                return 12;
+        }
+        return 0;
     }
 }

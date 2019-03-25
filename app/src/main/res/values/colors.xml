@@ -6,4 +6,5 @@
     <color name="colorSplash">#ffffff</color>
     <color name="colorActive">#11b303</color>
     <color name="colorBackground">#f1f1f1</color>
+    <color name="colorBlack">#000000</color>
 </resources>

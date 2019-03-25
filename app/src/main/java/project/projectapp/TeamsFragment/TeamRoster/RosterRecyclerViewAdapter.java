@@ -19,12 +19,12 @@ public class RosterRecyclerViewAdapter extends RecyclerView.Adapter<RosterRecycl
 
     private Context context;
 
-    public RosterRecyclerViewAdapter(Context thisContext, ArrayList<String> playerName,
-                                     ArrayList<String> playerNumber,ArrayList<String> playerPosition){
-        context = thisContext;
-        playerNames = playerName;
-        playerNumbers = playerNumber;
-        playerPositions = playerPosition;
+    public RosterRecyclerViewAdapter(Context context, ArrayList<String> playerNames,
+                                     ArrayList<String> playerNumbers,ArrayList<String> playerPositions){
+        this.context = context;
+        this.playerNames = playerNames;
+        this.playerNumbers = playerNumbers;
+        this.playerPositions = playerPositions;
     }
 
     @NonNull

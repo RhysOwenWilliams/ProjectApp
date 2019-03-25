@@ -25,6 +25,7 @@ public class TeamBioFragment extends Fragment {
     private static final String TEAM_KIT_COLOUR = "teamKitColour";
     private static final String TEAM_LOCATION_LATITUDE = "teamLocationLatitude";
     private static final String TEAM_LOCATION_LONGITUDE = "teamLocationLongitude";
+    private static final String TEAM_COLOUR = "teamColour";
 
     private String retrievedTeamContactName, retrievedTeamContactEmailAddress, retrievedTeamAddress,
             retrievedTeamLocationLatitude, retrievedTeamLocationLongitude, retrievedTeamKitColour;

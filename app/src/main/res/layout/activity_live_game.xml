@@ -29,6 +29,7 @@
                 android:visibility="visible">
 
                 <TextView
+                    android:id="@+id/live_game_which_quarter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/colorAccent"
@@ -70,6 +71,7 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:id="@+id/live_game_score"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -181,6 +183,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:textColor="@color/colorPrimaryDark"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:text="vs" />

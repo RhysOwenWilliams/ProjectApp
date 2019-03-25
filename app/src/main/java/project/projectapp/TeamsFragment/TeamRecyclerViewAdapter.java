@@ -41,6 +41,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
     private static final String TEAM_LOCATION_LONGITUDE = "teamLocationLongitude";
     private static final String TEAM_LOGO = "teamLogo";
     private static final String TEAM_NICKNAME = "teamNickname";
+    private static final String TEAM_COLOUR = "teamColour";
 
     private ArrayList<String> teamNames, selectedTeamData, teamLogo;
     private Context context;
@@ -48,16 +49,16 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
     private DatabaseReference databaseReference;
 
     private String teamName, address, contactName, loss, latitude, longitude, wins,
-            contactEmailAddress, kitColour, logo, nickname, selectedTeamName, selectedTeamWins,
+            contactEmailAddress, kitColour, logo, nickname, colour, selectedTeamName, selectedTeamWins,
             selectedTeamLosses, selectedTeamContactName, selectedTeamContactEmailAddress,
             selectedTeamAddress, selectedTeamLatitude, selectedTeamLongitude, selectedTeamKitColour,
-            selectedTeamLogo, selectedNickname;
+            selectedTeamLogo, selectedNickname, selectedColour;
 
-    public TeamRecyclerViewAdapter(Context thisContext, ArrayList<String> names,
-                                   ArrayList<String> logos){
-        context = thisContext;
-        teamNames = names;
-        teamLogo = logos;
+    public TeamRecyclerViewAdapter(Context context, ArrayList<String> teamNames,
+                                   ArrayList<String> teamLogo){
+        this.context = context;
+        this.teamNames = teamNames;
+        this.teamLogo = teamLogo;
     }
 
     @NonNull
@@ -106,15 +107,16 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
                             latitude = splitData[4];
                             longitude = splitData[5];
                             wins = splitData[6];
-                            contactEmailAddress = splitData[7];
-                            kitColour = splitData[8];
-                            logo = splitData[9];
-                            nickname = splitData[10];
+                            colour = splitData[7];
+                            contactEmailAddress = splitData[8];
+                            kitColour = splitData[9];
+                            logo = splitData[10];
+                            nickname = splitData[11];
                         }
                         teamName = teamNames.get(position);
 
                         retrieveSelectedData(teamName, formatTeamData(address, contactName,
-                                loss, latitude, longitude, wins, contactEmailAddress, kitColour,
+                                loss, latitude, longitude, wins, colour, contactEmailAddress, kitColour,
                                 logo, nickname));
                     }
                 });
@@ -139,6 +141,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
             selectedTeamKitColour = selectedTeamDetails.get(7);
             selectedTeamLogo = selectedTeamDetails.get(8);
             selectedNickname = selectedTeamDetails.get(9);
+            selectedColour = selectedTeamDetails.get(10);
         }
 
         Intent intent = new Intent(context, TeamDetailsActivity.class);
@@ -153,13 +156,14 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
         intent.putExtra(TEAM_KIT_COLOUR, selectedTeamKitColour);
         intent.putExtra(TEAM_LOGO, selectedTeamLogo);
         intent.putExtra(TEAM_NICKNAME, selectedNickname);
+        intent.putExtra(TEAM_COLOUR, selectedColour);
         context.startActivity(intent);
 
     }
 
     public ArrayList<String> formatTeamData(String address, String contactName,
                                                   String loss, String latitude, String longitude,
-                                                  String wins, String contactEmailAddress,
+                                                  String wins, String colour, String contactEmailAddress,
                                                   String kitColour, String logo, String nickname){
         ArrayList<String> rawData = new ArrayList<>();
         rawData.add(wins);
@@ -172,6 +176,7 @@ public class TeamRecyclerViewAdapter extends RecyclerView.Adapter<TeamRecyclerVi
         rawData.add(kitColour);
         rawData.add(logo);
         rawData.add(nickname);
+        rawData.add(colour);
 
         ArrayList<String> formatted = new ArrayList<>();
         for(String data : rawData){

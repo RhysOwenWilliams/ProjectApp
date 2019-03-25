@@ -1,5 +1,6 @@
 package project.projectapp.GamesFragment.GameLive;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,19 +53,17 @@ public class LiveActivity extends AppCompatActivity {
     private final String TEAM_1_NUMBERS = "team1Number";
     private final String TEAM_1_PLAYER_SCORES = "team1PlayerScores";
     private final String TEAM_1_FOULS = "team1Fouls";
-    private final String TEAM_2_PLAYERS = "team1Players";
-    private final String TEAM_2_NUMBERS = "team1Number";
-    private final String TEAM_2_PLAYER_SCORES = "team1PlayerScores";
-    private final String TEAM_2_FOULS = "team1Fouls";
-
-
+    private final String TEAM_2_PLAYERS = "team2Players";
+    private final String TEAM_2_NUMBERS = "team2Number";
+    private final String TEAM_2_PLAYER_SCORES = "team2PlayerScores";
+    private final String TEAM_2_FOULS = "team2Fouls";
     
     private ImageView team1Logo, team2Logo, team1ToolbarLogo, team2ToolbarLogo;
     private LinearLayout information;
     private TextView team1Nickname, team2Nickname, team1Abbreviation, team2Abbreviation,
             team1AbbrByQuarter, team2AbbrByQuarter, team1ScoreQ1, team1ScoreQ2, team1ScoreQ3,
             team1ScoreQ4, team2ScoreQ1, team2ScoreQ2, team2ScoreQ3, team2ScoreQ4, team1ScoreTotal,
-            team2ScoreTotal, team1Score, team2Score;
+            team2ScoreTotal, team1Score, team2Score, liveGameQuarter;
 
     private Toolbar toolbar;
     private ViewPager viewPager;
@@ -101,7 +102,7 @@ public class LiveActivity extends AppCompatActivity {
         team2ScoreTotal = findViewById(R.id.live_game_team_2_total);
         team1Score = findViewById(R.id.live_game_team_1_score);
         team2Score = findViewById(R.id.live_game_team_2_score);
-
+        liveGameQuarter = findViewById(R.id.live_game_which_quarter);
 
         fadeIn = AnimationUtils.loadAnimation(this, R.anim.splash_fade_in);
         fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
@@ -170,14 +171,10 @@ public class LiveActivity extends AppCompatActivity {
                             getTeamScores(teamData, 2);
                         }
                     }
-                    if(teamData.getKey().equals("Players")){
-                        if(team == "Team 1"){
-                            Log.d("teamdata", teamData.getValue().toString());
-                        } else {
-
-                        }
-                    }
                 }
+            }
+            if(getTeamData.getKey().equals("CurrentQuarter")){
+                liveGameQuarter.setText("LIVE - " + getTeamData.getValue().toString());
             }
         }
     }
@@ -303,18 +300,10 @@ public class LiveActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager, String team1, String team2){
-        sendArraysToSharedPreferences();
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new Team1RosterScore(), team1);
         adapter.addFragment(new Team2RosterScore(), team2);
         viewPager.setAdapter(adapter);
-
-        //TODO: here, add an intent or shared preference such that new arrays are sent to the fragments every time this is called
-    }
-
-    private void sendArraysToSharedPreferences() {
-        Bundle bundle = new Bundle();
-        //bundle.putStringArrayList(TEAM_1_PLAYERS);
     }
 
     /**

@@ -1,11 +1,14 @@
 package project.projectapp.GamesFragment.GameResult;
 
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +35,9 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
 
+import project.projectapp.GamesFragment.GameLive.Team1RosterScore;
+import project.projectapp.GamesFragment.GameLive.Team2RosterScore;
+import project.projectapp.PagerAdapter;
 import project.projectapp.R;
 
 public class ResultsActivity extends AppCompatActivity {
@@ -54,45 +60,33 @@ public class ResultsActivity extends AppCompatActivity {
     private final String TEAM_2_SCORE_Q2 = "team2ScoreQ2";
     private final String TEAM_2_SCORE_Q3 = "team2ScoreQ3";
     private final String TEAM_2_SCORE_Q4 = "team2ScoreQ4";
-    private final String GAME_BREAKDOWN = "gameBreakdown";
     private final String GAME_ID = "gameIds";
+    private final String TEAM_1_COLOURS = "team1Colours";
+    private final String TEAM_2_COLOURS = "team2Colours";
 
-    private int playerCount;
-    private String team1, team2, score1, score2, nickname1, nickname2, logo1, logo2, abbreviation1,
-            abbreviation2, wins1, losses1, wins2, losses2, scoreQ11, scoreQ21, scoreQ31, scoreQ41,
-            scoreQ12, scoreQ22, scoreQ32, scoreQ42, breakdown, gameId;
+    private int colour1, colour2;
+    private String score1, score2, nickname1, nickname2, logo1, logo2, abbreviation1,
+            abbreviation2, scoreQ11, scoreQ21, scoreQ31, scoreQ41,
+            scoreQ12, scoreQ22, scoreQ32, scoreQ42;
 
-    private ArrayList<String> team1Players, team2Players, team1Numbers, team2Numbers,
-            team1PlayerScores, team2PlayerScores, team1Fouls, team2Fouls, allNumbers,
-            allPlayerScores, allFouls;
-
-    private ExpandableLayout gameBreakdownLayout, team2PlayerBreakdownLayout, team1PlayerBreakdownLayout;
     private ImageView team1Logo, team2Logo, team1ToolbarLogo, team2ToolbarLogo;
     private TextView team1Nickname, team2Nickname, team1Score, team2Score, team1ToolbarName,
             team2ToolbarName, team1ByQuarterName, team2ByQuarterName, team1Total, team2Total,
             team1ScoreQ1, team1ScoreQ2, team1ScoreQ3, team1ScoreQ4, team2ScoreQ1, team2ScoreQ2,
-            team2ScoreQ3, team2ScoreQ4, gameBreakdown, gameBreakdownText, team1PlayerData,
-            team2PlayerData;
+            team2ScoreQ3, team2ScoreQ4;
+    private View team1Colour, team2Colour;
 
     private LinearLayout information;
 
     private Animation slideUp, slideDown;
 
     private Toolbar toolbar;
+    private ViewPager viewPager;
 
-    private DatabaseReference databaseReference;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_result);
-
-        Log.d("activityruntime", "Option loading");
-
-        playerCount = 0;
-
-        gameBreakdownLayout = findViewById(R.id.results_game_breakdown_layout);
-        team1PlayerBreakdownLayout = findViewById(R.id.results_team_1_player_breakdown);
-        team2PlayerBreakdownLayout = findViewById(R.id.results_team_2_player_breakdown);
 
         team1Nickname = findViewById(R.id.results_team_1_nickname);
         team2Nickname = findViewById(R.id.results_team_2_nickname);
@@ -116,22 +110,8 @@ public class ResultsActivity extends AppCompatActivity {
         team2ScoreQ2 = findViewById(R.id.results_team_2_score_q2);
         team2ScoreQ3 = findViewById(R.id.results_team_2_score_q3);
         team2ScoreQ4 = findViewById(R.id.results_team_2_score_q4);
-        gameBreakdown = findViewById(R.id.results_game_breakdown);
-        gameBreakdownText = findViewById(R.id.results_game_breakdown_text);
-        team1PlayerData = findViewById(R.id.results_team_1_player_data);
-        team2PlayerData = findViewById(R.id.results_team_2_player_data);
-
-        team1Players = new ArrayList<>();
-        team2Players = new ArrayList<>();
-        team1Numbers = new ArrayList<>();
-        team2Numbers = new ArrayList<>();
-        team1PlayerScores = new ArrayList<>();
-        team2PlayerScores = new ArrayList<>();
-        team1Fouls = new ArrayList<>();
-        team2Fouls = new ArrayList<>();
-        allNumbers = new ArrayList<>();
-        allPlayerScores = new ArrayList<>();
-        allFouls = new ArrayList<>();
+        team1Colour = findViewById(R.id.results_team_1_colour);
+        team2Colour = findViewById(R.id.results_team_2_colour);
 
         information = findViewById(R.id.results_toolbar_information);
         slideUp = AnimationUtils.loadAnimation(this, R.anim.splash_fade_in);
@@ -146,33 +126,17 @@ public class ResultsActivity extends AppCompatActivity {
                 .setColorFilter(getResources().getColor(R.color.colorSplash),
                         PorterDuff.Mode.SRC_ATOP);
 
-        expandingLists(gameBreakdownLayout, gameBreakdown);
-        expandingLists(team1PlayerBreakdownLayout, team1PlayerData);
-        expandingLists(team2PlayerBreakdownLayout, team2PlayerData);
+        viewPager = findViewById(R.id.results_game_view_pager);
+
+        TabLayout tabs = findViewById(R.id.results_game_tab_layout);
+        tabs.setupWithViewPager(viewPager);
+
         retrieveIntentData();
         addInfoWhenCollapsed();
-
-    }
-
-    private void expandingLists(final ExpandableLayout layout, final TextView text){
-        text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layout.toggle();
-                if(layout.isExpanded()){
-                    text.setCompoundDrawablesWithIntrinsicBounds(0,0,
-                            R.drawable.ic_arrow_drop_down_black_24dp, 0);
-                } else {
-                    text.setCompoundDrawablesWithIntrinsicBounds(0,0,
-                            R.drawable.ic_arrow_drop_up_black_24dp, 0);
-                }
-            }
-        });
+        setLayoutData();
     }
 
     private void retrieveIntentData(){
-        team1 = getIntent().getStringExtra(TEAM_1);
-        team2 = getIntent().getStringExtra(TEAM_2);
         score1 = getIntent().getStringExtra(TEAM_1_SCORE);
         score2 = getIntent().getStringExtra(TEAM_2_SCORE);
         nickname1 = getIntent().getStringExtra(TEAM_1_NICKNAME);
@@ -189,103 +153,8 @@ public class ResultsActivity extends AppCompatActivity {
         scoreQ22 = getIntent().getStringExtra(TEAM_2_SCORE_Q2);
         scoreQ32 = getIntent().getStringExtra(TEAM_2_SCORE_Q3);
         scoreQ42 = getIntent().getStringExtra(TEAM_2_SCORE_Q4);
-        breakdown = getIntent().getStringExtra(GAME_BREAKDOWN);
-        gameId = getIntent().getStringExtra(GAME_ID);
-
-        getData();
-    }
-
-    private void getData() {
-        databaseReference = FirebaseDatabase.getInstance()
-                .getReference("Games");
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                team1PlayerScores.clear(); // Both are cleared otherwise data overlaps
-                team2PlayerScores.clear(); // Both are cleared otherwise data overlaps
-                for(DataSnapshot data : dataSnapshot.getChildren()){
-                    for(DataSnapshot teamData : data.getChildren()){
-                        if(teamData.getKey().equals("GameId")){
-                            if(teamData.getValue().toString().equals(gameId)){
-                                getTeamData(data, "Team 1", team1Players, team1Numbers,
-                                        team1PlayerScores, team1Fouls, 1);
-                                getTeamData(data, "Team 2", team2Players, team2Numbers,
-                                        team2PlayerScores, team2Fouls, 2);
-                            }
-                        }
-                    }
-                }
-                setLayoutData();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void getTeamData(DataSnapshot data, String team, ArrayList<String> teamNameArray,
-                             ArrayList<String> teamPlayerArray, ArrayList<String> teamScoresArray,
-                             ArrayList<String> teamFoulsArray, int whichTeam) {
-        for(DataSnapshot gameData : data.getChildren()){
-            if(gameData.getKey().equals(team)){
-                for(DataSnapshot teamData : gameData.getChildren()){
-                    if(teamData.getKey().equals("Players")){
-                        for(DataSnapshot playerData : teamData.getChildren()){
-                            getPlayerData(playerData, teamNameArray, teamPlayerArray, teamScoresArray,
-                                    teamFoulsArray, whichTeam);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void getPlayerData(DataSnapshot data, ArrayList<String> teamNameArray,
-                               ArrayList<String> teamPlayerArray, ArrayList<String> teamScoresArray,
-                               ArrayList<String> teamFoulsArray, int whichTeam) {
-        for(DataSnapshot perPlayer : data.getChildren()){
-            if(perPlayer.getKey().equals("name")){
-                teamNameArray.add(perPlayer.getValue().toString());
-            } else if(perPlayer.getKey().equals("number")){
-                teamPlayerArray.add(perPlayer.getValue().toString());
-            } else {
-                for(DataSnapshot playerScoreFouls : perPlayer.getChildren()){
-                    if(playerScoreFouls.getKey().equals("1-pointers")){
-                        teamScoresArray.add(playerScoreFouls.getValue().toString());
-                    } else if(playerScoreFouls.getKey().equals("2-pointers")){
-                        teamScoresArray.add(String.valueOf(Integer
-                                .valueOf(playerScoreFouls.getValue().toString())*2));
-                    } else if(playerScoreFouls.getKey().equals("3-pointers")){
-                        teamScoresArray.add(String.valueOf(Integer
-                                .valueOf(playerScoreFouls.getValue().toString())*3));
-                    } else {
-                        teamFoulsArray.add(playerScoreFouls.getValue().toString());
-                    }
-                }
-            }
-        }
-        formatPlayerScores(teamScoresArray, whichTeam);
-    }
-
-    private void formatPlayerScores(ArrayList<String> teamScore, int whichTeam) {
-        ArrayList<String> scores = new ArrayList<>();
-
-        for(int i = 0; i < teamScore.size(); i+=3) {
-            int score = Integer.valueOf(teamScore.get(i))
-                    + Integer.valueOf(teamScore.get(i + 1))
-                    + Integer.valueOf(teamScore.get(i + 2));
-
-            scores.add(String.valueOf(score));
-        }
-
-        if(whichTeam == 1){
-            team1PlayerScores = scores;
-        } else {
-            team2PlayerScores = scores;
-        }
+        colour1 = Color.parseColor(getIntent().getStringExtra(TEAM_1_COLOURS));
+        colour2 = Color.parseColor(getIntent().getStringExtra(TEAM_2_COLOURS));
     }
 
     /**
@@ -323,12 +192,10 @@ public class ResultsActivity extends AppCompatActivity {
         team2ScoreQ2.setText(scoreQ22);
         team2ScoreQ3.setText(scoreQ32);
         team2ScoreQ4.setText(scoreQ42);
-        gameBreakdownText.setText(breakdown);
-        team1PlayerData.setText(nickname1);
-        team2PlayerData.setText(nickname2);
+        team1Colour.setBackgroundColor(colour1);
+        team2Colour.setBackgroundColor(colour2);
 
-        recyclerViewSetupTeam1();
-        recyclerViewSetupTeam2();
+        setupViewPager(viewPager);
     }
 
     private void addInfoWhenCollapsed() {
@@ -365,28 +232,13 @@ public class ResultsActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Home team
-     */
-    private void recyclerViewSetupTeam1() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view_team_1_breakdown);
-        TeamBreakdownRecyclerViewAdapter adapter = new TeamBreakdownRecyclerViewAdapter(this,
-                team1Players, team1Numbers, team1PlayerScores, team1Fouls);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    private void setupViewPager(ViewPager viewPager){
+        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new BreakdownResultsFragment(), "Breakdown");
+        adapter.addFragment(new Team1ResultFragment(), nickname1);
+        adapter.addFragment(new Team2ResultFragment(), nickname2);
+        viewPager.setAdapter(adapter);
     }
-
-    /**
-     * Away team
-     */
-    private void recyclerViewSetupTeam2() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view_team_2_breakdown);
-        TeamBreakdownRecyclerViewAdapter adapter = new TeamBreakdownRecyclerViewAdapter(this,
-                team2Players, team2Numbers, team2PlayerScores, team2Fouls);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
 
     /**
      * Called when an option is selected, in this case the back button since it is the only option

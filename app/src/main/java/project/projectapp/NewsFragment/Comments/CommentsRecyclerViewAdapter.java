@@ -32,18 +32,16 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRe
 
     private Context context;
 
-    private DatabaseReference databaseReference;
-
-    public CommentsRecyclerViewAdapter(Context thisContext, ArrayList<String> username,
-                                       ArrayList<String> userProfileImage,
-                                       ArrayList<String> userComment, ArrayList<String> commentDate,
-                                       ArrayList<String> commentTime){
-        context = thisContext;
-        usernames = username;
-        userProfileImages = userProfileImage;
-        userComments = userComment;
-        commentDates = commentDate;
-        commentTimes = commentTime;
+    public CommentsRecyclerViewAdapter(Context context, ArrayList<String> usernames,
+                                       ArrayList<String> userProfileImages,
+                                       ArrayList<String> userComments, ArrayList<String> commentDates,
+                                       ArrayList<String> commentTimes){
+        this.context = context;
+        this.usernames = usernames;
+        this.userProfileImages = userProfileImages;
+        this.userComments = userComments;
+        this.commentDates = commentDates;
+        this.commentTimes = commentTimes;
     }
 
     @NonNull

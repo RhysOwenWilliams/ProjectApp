@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,16 +21,14 @@ public class TeamBreakdownRecyclerViewAdapter extends RecyclerView.Adapter<TeamB
 
     private Context context;
 
-    public TeamBreakdownRecyclerViewAdapter(Context thisContext, ArrayList<String> playerName,
-                                            ArrayList<String> playerNumber, ArrayList<String> playerScore,
-                                            ArrayList<String> playerFoul){
-        context = thisContext;
-        playerNames = playerName;
-        playerNumbers = playerNumber;
-        playerScores = playerScore;
-        playerFouls = playerFoul;
-
-        Log.d("loadedteamdata", playerNames.toString());
+    public TeamBreakdownRecyclerViewAdapter(Context context, ArrayList<String> playerNames,
+                                            ArrayList<String> playerNumbers, ArrayList<String> playerScores,
+                                            ArrayList<String> playerFouls){
+        this.context = context;
+        this.playerNames = playerNames;
+        this.playerNumbers = playerNumbers;
+        this.playerScores = playerScores;
+        this.playerFouls = playerFouls;
     }
 
     @NonNull
@@ -43,21 +42,24 @@ public class TeamBreakdownRecyclerViewAdapter extends RecyclerView.Adapter<TeamB
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        holder.number.setText(playerNumbers.get(position));
+        holder.number.setText("#" + playerNumbers.get(position));
         holder.name.setText(playerNames.get(position));
         holder.score.setText(playerScores.get(position));
         holder.fouls.setText(playerFouls.get(position));
+
+        // Removes the click animation since it appears like the click should do something otherwiSe
+        holder.parentLayout.setClickable(false);
     }
 
     @Override
     public int getItemCount() {
-        return playerNames.size();
+        return playerScores.size();
     }
 
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        LinearLayout parentLayout;
+        RelativeLayout parentLayout;
         TextView number;
         TextView name;
         TextView score;
