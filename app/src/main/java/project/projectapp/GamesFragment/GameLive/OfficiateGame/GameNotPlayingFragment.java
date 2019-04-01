@@ -23,13 +23,11 @@ import project.projectapp.R;
 
 public class GameNotPlayingFragment extends Fragment {
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.officiate_game_team_1_fragment, container, false);
+        View view = inflater.inflate(R.layout.game_not_playing_fragment, container, false);
         return view;
     }
 }

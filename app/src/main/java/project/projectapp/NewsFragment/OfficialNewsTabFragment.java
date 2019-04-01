@@ -72,6 +72,8 @@ public class OfficialNewsTabFragment extends Fragment {
         authenticateUser();
         retrieveOfficialArticles(view);
 
+        progressBar.setVisibility(View.VISIBLE);
+
         return view;
     }
 
@@ -206,7 +208,6 @@ public class OfficialNewsTabFragment extends Fragment {
                             commentCount.put(comments.getKey(), j);
                         }
                     }
-
                     recyclerViewSetup(view);
                 }
             }
@@ -229,5 +230,7 @@ public class OfficialNewsTabFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

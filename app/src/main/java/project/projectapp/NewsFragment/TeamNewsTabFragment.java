@@ -69,6 +69,9 @@ public class TeamNewsTabFragment extends Fragment {
         authenticateUser();
         retrieveOfficialArticles(view);
 
+
+        progressBar.setVisibility(View.VISIBLE);
+
         return view;
     }
 
@@ -187,20 +190,6 @@ public class TeamNewsTabFragment extends Fragment {
                 R.anim.slide_out_from_bottom);
     }
 
-    private void recyclerViewSetup(View view){
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_news_teams);
-        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(getContext(), images,
-                usernames, dates, times, titles, contents, postIds, commentCount);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-    }
-
-
     private void getCommentCount(final ArrayList<String> postIds, final View view){
 
         databaseReference = FirebaseDatabase.getInstance()
@@ -229,5 +218,21 @@ public class TeamNewsTabFragment extends Fragment {
 
             }
         });
+    }
+
+    private void recyclerViewSetup(View view){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_news_teams);
+        NewsRecyclerViewAdapter adapter = new NewsRecyclerViewAdapter(getContext(), images,
+                usernames, dates, times, titles, contents, postIds, commentCount);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
+
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

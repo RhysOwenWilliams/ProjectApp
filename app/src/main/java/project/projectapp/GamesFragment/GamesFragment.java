@@ -36,8 +36,6 @@ import java.util.Calendar;
 import project.projectapp.R;
 import project.projectapp.TeamsFragment.TeamRecyclerViewAdapter;
 
-//TODO: access the games section of the database and load them into the recycler view
-//TODO: based on the name of the team, search the teams section for additional data
 public class GamesFragment extends Fragment {
 
     private final String ALLOW_COMMA = "@%$%@$#%";

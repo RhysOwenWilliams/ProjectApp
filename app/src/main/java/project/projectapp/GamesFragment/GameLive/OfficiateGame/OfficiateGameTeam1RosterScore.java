@@ -1,5 +1,6 @@
 package project.projectapp.GamesFragment.GameLive.OfficiateGame;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ public class OfficiateGameTeam1RosterScore extends Fragment {
 
     private final String GAME_ID = "gameIds";
 
+    private int score;
     private String gameId, quarter;
 
     private ArrayList<String> playerNames, playerNumbers, onePointers, twoPointers, threePointers,
@@ -101,7 +103,7 @@ public class OfficiateGameTeam1RosterScore extends Fragment {
     }
 
     private void addPlayersToArray(DataSnapshot teamData) {
-        int score = 0;
+        score = 0;
         for(DataSnapshot perPlayer : teamData.getChildren()){
             for(DataSnapshot players : perPlayer.getChildren()){
                 if(players.getKey().equals("name")){
@@ -131,14 +133,19 @@ public class OfficiateGameTeam1RosterScore extends Fragment {
                 }
             }
         }
-        getPreviousQuarterScore(score);
+        if(quarter != "Total"){
+            getPreviousQuarterScore(score);
+        }
     }
 
     private void getPreviousQuarterScore(final int score){
         databaseReferenceTotalScore = FirebaseDatabase.getInstance()
-                .getReference("Live").child("Game "+gameId).child("Team1QuarterScore");
+                .getReference("Live")
+                .child("Game "+gameId)
+                .child("Team1QuarterScore");
 
-        databaseReferenceTotalScore.addListenerForSingleValueEvent(new ValueEventListener() {
+       databaseReferenceTotalScore
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int quarterScore = 0;
@@ -161,7 +168,7 @@ public class OfficiateGameTeam1RosterScore extends Fragment {
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Games");
         if(quarter != null){
-            if(quarter == "Not Started" || quarter != "TOT"){
+            if(quarter != "Total"){
                 databaseReference.child("Game "+gameId)
                         .child("Team 1")
                         .child("Score")

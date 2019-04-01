@@ -131,7 +131,9 @@ public class OfficiateGameTeam2RosterScore extends Fragment {
                 }
             }
         }
-        getPreviousQuarterScore(score);
+        if(quarter != "Total"){
+            getPreviousQuarterScore(score);
+        }
     }
 
     private void getPreviousQuarterScore(final int score){
@@ -161,7 +163,7 @@ public class OfficiateGameTeam2RosterScore extends Fragment {
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Games");
         if(quarter != null){
-            if(quarter == "Not Started" || quarter != "TOT"){
+            if(quarter == "Not Started" || quarter != "Total"){
                 databaseReference.child("Game "+gameId)
                         .child("Team 2")
                         .child("Score")

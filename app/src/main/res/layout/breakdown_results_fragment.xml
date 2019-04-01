@@ -9,11 +9,15 @@
         android:layout_height="1dp"
         android:background="@color/colorBackground" />
 
-    <TextView
-        android:id="@+id/results_game_breakdown_text"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:lineSpacingExtra="2dp" />
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/results_game_breakdown_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:lineSpacingExtra="2dp" />
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

@@ -29,14 +29,15 @@
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="true"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:visibility="visible">
+                android:gravity="center"
+                android:layout_marginLeft="85dp"
+                android:visibility="visible"
+                android:layout_marginRight="50dp">
 
                 <ImageView
                     android:id="@+id/officiate_game_toolbar_team_1"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_marginLeft="10dp"
                     android:src="@drawable/cma_no_background" />
 
                 <TextView
@@ -79,8 +80,8 @@
 
             <ImageView
                 android:id="@+id/officiate_game_information"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="right"
                 android:layout_marginRight="10dp"
                 android:adjustViewBounds="true"
@@ -541,6 +542,7 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/officiate_game_view_pager"
             android:layout_width="match_parent"
+            android:visibility="invisible"
             android:layout_height="match_parent"
             android:layout_below="@id/officiate_game_tab_layout"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>

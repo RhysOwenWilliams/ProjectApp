@@ -27,6 +27,7 @@ import project.projectapp.Account.LoginActivity;
 import project.projectapp.Account.ProfileActivity;
 import project.projectapp.Account.SettingsActivity;
 import project.projectapp.GamesFragment.GamesFragment;
+import project.projectapp.MessageFragment.MessengerFragment;
 import project.projectapp.NewsFragment.NewsFragment;
 import project.projectapp.StandingsFragment.StandingsFragment;
 import project.projectapp.TeamsFragment.TeamsFragment;

@@ -36,7 +36,7 @@ public class OfficiateGameRecyclerViewAdapter extends RecyclerView
 
     private Context context;
 
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference, databaseReferenceRunningQuarter;
 
     public OfficiateGameRecyclerViewAdapter(Context context, ArrayList<String> playerNames,
                                             ArrayList<String> playerNumbers,
@@ -92,7 +92,6 @@ public class OfficiateGameRecyclerViewAdapter extends RecyclerView
         decrementPlayerData(holder.decrementTwoPointers, position);
         decrementPlayerData(holder.decrementThreePointers, position);
         decrementPlayerData(holder.decrementFouls, position);
-
     }
 
     private void incrementPlayerData(ImageButton button, final int position){

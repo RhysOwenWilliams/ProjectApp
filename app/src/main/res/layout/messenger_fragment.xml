@@ -1,15 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="556dp"
+    android:layout_marginTop="56dp">
 
-    <TextView
+    <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Messenger"
-        android:textSize="30sp"
+        android:id="@+id/messenger_progress_bar"
         android:layout_centerInParent="true"/>
+
+
+    <LinearLayout
+        android:id="@+id/messenger_toolbar_custom"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp"
+        android:paddingTop="5dp"
+        android:weightSum="100"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/messenger_room_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="90"
+            android:gravity="center"
+            android:text="Caerphilly Cobras"
+            android:textColor="@color/colorSplash" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_exit_to_app_black_24dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/messenger_is_in_room"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/messenger_toolbar_custom"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="61dp"
+        android:visibility="invisible">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_messages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/messenger_not_in_room"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <EditText
+            android:id="@+id/messenger_user_entered_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Please enter the chat code"
+            android:inputType="numberPassword" />
+
+        <Button
+            android:id="@+id/messenger_check_code"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_round_edges"
+            android:text="Enter Chat"
+            android:textColor="@color/colorSplash"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/messenger_add_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:visibility="invisible">
+
+        <EditText
+            android:id="@+id/comments_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="9"
+            android:background="@drawable/round_edges"
+            android:hint="Message ..."
+            android:padding="10dp" />
+
+        <ImageButton
+            android:id="@+id/comments_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_send_primary_36dp" />
+
+    </LinearLayout>
 
 
 </RelativeLayout>

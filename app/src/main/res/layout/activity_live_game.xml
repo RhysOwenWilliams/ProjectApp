@@ -130,6 +130,7 @@
                 android:weightSum="2">
 
                 <View
+                    android:id="@+id/live_game_team_1_colour"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
                     android:layout_gravity="bottom"
@@ -137,6 +138,7 @@
                     android:background="#ec0010" />
 
                 <View
+                    android:id="@+id/live_game_team_2_colour"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
                     android:layout_gravity="bottom"

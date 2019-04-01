@@ -154,7 +154,11 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
             holder.liveView.setVisibility(View.VISIBLE);
             holder.team1Score.setText(team1Scores.get(position));
             holder.team2Score.setText(team2Scores.get(position));
-            holder.liveCurrentQuarter.setText("LIVE - " + gameCurrentQuarters.get(position));
+            if(gameCurrentQuarters.get(position).equals("Total")){
+                holder.liveCurrentQuarter.setText("Ending...");
+            } else {
+                holder.liveCurrentQuarter.setText("LIVE - " + gameCurrentQuarters.get(position));
+            }
         } else {
             holder.fixtureView.setVisibility(View.VISIBLE);
             holder.time.setText(gameTimes.get(position));
@@ -229,6 +233,8 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
     private void officiateGame(int position) {
         Intent officiate = new Intent(context, OfficiateGameActivity.class);
         officiate.putExtra(GAME_ID, gameIds.get(position));
+        officiate.putExtra(TEAM_1, team1Names.get(position));
+        officiate.putExtra(TEAM_2, team2Names.get(position));
         officiate.putExtra(TEAM_1_ABBREVIATION, team1Abbreviations.get(position));
         officiate.putExtra(TEAM_2_ABBREVIATION, team2Abbreviations.get(position));
         officiate.putExtra(TEAM_1_LOGO, team1Logos.get(position));
@@ -328,7 +334,6 @@ public class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecycler
      * Tests the game date against todays date to change games from fixtures to results
      */
 
-    //TODO: problem here is that it doesn't know the max is 60 since it will check up to 100, need to format it for an actual time
     private boolean gameDateToValue(String date, String time) {
         String[] splitDate = date.split(" ");
         String month = splitDate[0];

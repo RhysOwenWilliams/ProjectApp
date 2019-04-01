@@ -37,11 +37,9 @@ import project.projectapp.Account.ProfileActivity;
 import project.projectapp.PagerAdapter;
 import project.projectapp.R;
 
-//TODO: retrieve the scores for the quarter
-//TODO: test an increment button to change the score
 public class OfficiateGameActivity extends AppCompatActivity {
 
-    private static final long TIME_PER_QUARTER = 10000; //600000
+    private static final long TIME_PER_QUARTER = 600000;
 
     private static final String QUARTER_2 = "Start Quarter 2";
     private static final String QUARTER_3 = "Start Quarter 3";
@@ -49,6 +47,8 @@ public class OfficiateGameActivity extends AppCompatActivity {
     private static final String FINISHED = "Game Finished";
     private static final String TITLE = "How to use";
 
+    private final String TEAM_1 = "team1Name";
+    private final String TEAM_2 = "team2Name";
     private final String TEAM_1_NICKNAME = "team1Nickname";
     private final String TEAM_2_NICKNAME = "team2Nickname";
     private final String TEAM_1_LOGO = "team1Logo";
@@ -57,10 +57,11 @@ public class OfficiateGameActivity extends AppCompatActivity {
     private final String TEAM_2_ABBREVIATION = "team2Abbreviation";
     private final String GAME_ID = "gameIds";
 
-    private Boolean quarterIsPlaying, canAddScores;
-    private String team1, team2, logo1, logo2, gameId, nickname1, nickname2;
+    private Boolean quarterIsPlaying;
+    private int team1FinalScore, team2FinalScore;
+    private String team1, team2, team1Abbreviation, team2Abbreviation, logo1, logo2, gameId,
+            nickname1, nickname2;
 
-    private EditText writeBreakdown;
     private FloatingActionButton quarterCountdown;
     private ImageView team1ToolbarLogo, team2ToolbarLogo, information;
     private TextView team1ToolbarAbbreviation, team2ToolbarAbbreviation, quarterTime,
@@ -68,7 +69,6 @@ public class OfficiateGameActivity extends AppCompatActivity {
             quarter1, quarter2, quarter3, quarter4, finished, team1ScoreQ1, team1ScoreQ2,
             team1ScoreQ3, team1ScoreQ4, team2ScoreQ1, team2ScoreQ2, team2ScoreQ3, team2ScoreQ4,
             team1ScoreTotal, team2ScoreTotal;
-    private Toolbar toolbar;
 
     private LinearLayout startGameQuarter, quarterTimer;
 
@@ -76,8 +76,9 @@ public class OfficiateGameActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
 
+    // Multiple database references are required otherwise there is an async class issue otherwise
     private DatabaseReference databaseReference, databaseReferenceTotalScore,
-            databaseReferenceCompleteGame;
+            databaseReferenceFinalScore, databaseReferenceSetWins, databaseReferenceSetLoss;
 
     private int quarter, score;
     private long timeRemaining = TIME_PER_QUARTER;
@@ -131,15 +132,6 @@ public class OfficiateGameActivity extends AppCompatActivity {
                 }
             }
         });
-
-        toolbar = findViewById(R.id.officiate_game_toolbar);
-        setSupportActionBar(toolbar);
-
-        // The code below sets the colour of the back button to white
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.getNavigationIcon()
-                .setColorFilter(getResources().getColor(R.color.colorSplash),
-                        PorterDuff.Mode.SRC_ATOP);
 
         viewPager = findViewById(R.id.officiate_game_view_pager);
 
@@ -254,7 +246,6 @@ public class OfficiateGameActivity extends AppCompatActivity {
                     team2ScoreTotal.setText(perTeamScore.getValue().toString());
                 }
             }
-
         }
     }
 
@@ -372,11 +363,8 @@ public class OfficiateGameActivity extends AppCompatActivity {
                          .child("Type")
                          .setValue("Live");
                 if(quarter == "Total"){
-                    writeGameBreakdown();
-                } else {
-                    databaseReference.child("Game "+gameId)
-                            .child("Type")
-                            .setValue("Live");
+                    getFinalScore("Team 1");
+                    getFinalScore("Team 2");
                 }
             }
 
@@ -387,11 +375,84 @@ public class OfficiateGameActivity extends AppCompatActivity {
         });
     }
 
-    //TODO: open up a new activity to let officials enter data
+    private void getFinalScore(final String team) {
+        databaseReferenceFinalScore = FirebaseDatabase.getInstance()
+                .getReference("Games")
+                .child("Game "+gameId)
+                .child(team)
+                .child("Score")
+                .child("Total");
+
+        databaseReferenceFinalScore.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(team == "Team 1"){
+                    team1FinalScore = Integer.valueOf(dataSnapshot.getValue().toString());
+                } else {
+                    team2FinalScore = Integer.valueOf(dataSnapshot.getValue().toString());
+                }
+
+                if(team1FinalScore != 0 && team2FinalScore != 0){
+                    if(team1FinalScore > team2FinalScore){
+                        setTeamWinsLoss(team1, team2);
+                    } else {
+                        setTeamWinsLoss(team2, team1);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    private void setTeamWinsLoss(final String teamWin, final String teamLoss) {
+        databaseReferenceSetWins = FirebaseDatabase.getInstance()
+                .getReference("Teams")
+                .child(teamWin)
+                .child("Wins");
+        databaseReferenceSetLoss = FirebaseDatabase.getInstance()
+                .getReference("Teams")
+                .child(teamLoss)
+                .child("Loss");
+
+        databaseReferenceSetWins.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int newWins = Integer.valueOf(dataSnapshot.getValue().toString())+1;
+                databaseReferenceSetWins.setValue(newWins);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReferenceSetLoss.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int newLoss = Integer.valueOf(dataSnapshot.getValue().toString())+1;
+                databaseReferenceSetLoss.setValue(newLoss);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        writeGameBreakdown();
+    }
+
     private void writeGameBreakdown() {
         Intent breakdown = new Intent(this, BreakdownActivity.class);
         breakdown.putExtra(GAME_ID, gameId);
         startActivity(breakdown);
+        OfficiateGameActivity.this.finish();
     }
 
     private void allScore(final String team){
@@ -435,7 +496,7 @@ public class OfficiateGameActivity extends AppCompatActivity {
                 this, R.drawable.ic_play_arrow_white_24dp));
     }
     private void resumeQuarter() {
-        canAddScores = true;
+        viewPager.setVisibility(View.VISIBLE);
         // called every second
         countDownTimer = new CountDownTimer(timeRemaining, 1000) {
             @Override
@@ -466,12 +527,15 @@ public class OfficiateGameActivity extends AppCompatActivity {
         if(remaining.equals("00:00")){
             startGameQuarter.setVisibility(View.VISIBLE);
             quarterTimer.setVisibility(View.INVISIBLE);
-            canAddScores = false;
+            viewPager.setVisibility(View.INVISIBLE);
         }
     }
+
     private void getIntentData() {
-        team1 = getIntent().getStringExtra(TEAM_1_ABBREVIATION);
-        team2 = getIntent().getStringExtra(TEAM_2_ABBREVIATION);
+        team1 = getIntent().getStringExtra(TEAM_1);
+        team2 = getIntent().getStringExtra(TEAM_2);
+        team1Abbreviation = getIntent().getStringExtra(TEAM_1_ABBREVIATION);
+        team2Abbreviation = getIntent().getStringExtra(TEAM_2_ABBREVIATION);
         logo1 = getIntent().getStringExtra(TEAM_1_LOGO);
         logo2 = getIntent().getStringExtra(TEAM_2_LOGO);
         nickname1 = getIntent().getStringExtra(TEAM_1_NICKNAME);
@@ -487,10 +551,10 @@ public class OfficiateGameActivity extends AppCompatActivity {
         Glide.with(getApplicationContext())
                 .load(logo2)
                 .into(team2ToolbarLogo);
-        team1ToolbarAbbreviation.setText(team1);
-        team2ToolbarAbbreviation.setText(team2);
-        scoreByQuarterTeam1.setText(team1);
-        scoreByQuarterTeam2.setText(team2);
+        team1ToolbarAbbreviation.setText(team1Abbreviation);
+        team2ToolbarAbbreviation.setText(team2Abbreviation);
+        scoreByQuarterTeam1.setText(team1Abbreviation);
+        scoreByQuarterTeam2.setText(team2Abbreviation);
     }
 
     private void setupViewPager(ViewPager viewPager){
@@ -516,14 +580,11 @@ public class OfficiateGameActivity extends AppCompatActivity {
     }
 
     /**
-     * Default onBackPressed, returns to the previous activity
+     * Disable back press
      */
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
+
     }
+
 }

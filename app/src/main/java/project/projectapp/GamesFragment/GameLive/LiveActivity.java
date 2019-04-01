@@ -2,6 +2,7 @@ package project.projectapp.GamesFragment.GameLive;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -64,6 +65,7 @@ public class LiveActivity extends AppCompatActivity {
             team1AbbrByQuarter, team2AbbrByQuarter, team1ScoreQ1, team1ScoreQ2, team1ScoreQ3,
             team1ScoreQ4, team2ScoreQ1, team2ScoreQ2, team2ScoreQ3, team2ScoreQ4, team1ScoreTotal,
             team2ScoreTotal, team1Score, team2Score, liveGameQuarter;
+    private View team1Colour, team2Colour;
 
     private Toolbar toolbar;
     private ViewPager viewPager;
@@ -103,6 +105,8 @@ public class LiveActivity extends AppCompatActivity {
         team1Score = findViewById(R.id.live_game_team_1_score);
         team2Score = findViewById(R.id.live_game_team_2_score);
         liveGameQuarter = findViewById(R.id.live_game_which_quarter);
+        team1Colour = findViewById(R.id.live_game_team_1_colour);
+        team2Colour = findViewById(R.id.live_game_team_2_colour);
 
         fadeIn = AnimationUtils.loadAnimation(this, R.anim.splash_fade_in);
         fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
@@ -144,6 +148,8 @@ public class LiveActivity extends AppCompatActivity {
                         }
                     }
                 }
+
+                setupViewPager(viewPager, team1, team2);
             }
 
             @Override
@@ -175,6 +181,10 @@ public class LiveActivity extends AppCompatActivity {
             }
             if(getTeamData.getKey().equals("CurrentQuarter")){
                 liveGameQuarter.setText("LIVE - " + getTeamData.getValue().toString());
+
+                if(getTeamData.getValue().toString().equals("Total")){
+                    finish();
+                }
             }
         }
     }
@@ -229,6 +239,15 @@ public class LiveActivity extends AppCompatActivity {
                 for(DataSnapshot teams : dataSnapshot.getChildren()){
                     if(teams.getKey().equals(teamName)){
                         for(DataSnapshot teamData : teams.getChildren()){
+                            if(teamData.getKey().equals("Colour")){
+                                if(whichTeam == 1){
+                                    int team1 = Color.parseColor(teamData.getValue().toString());
+                                    team1Colour.setBackgroundColor(team1);
+                                } else {
+                                    int team2 = Color.parseColor(teamData.getValue().toString());
+                                    team2Colour.setBackgroundColor(team2);
+                                }
+                            }
                             if(teamData.getKey().equals("Nickname")){
                                 if(whichTeam == 1){
                                     team1 = teamData.getValue().toString();
@@ -267,8 +286,6 @@ public class LiveActivity extends AppCompatActivity {
                         }
                     }
                 }
-
-                setupViewPager(viewPager, team1, team2);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
