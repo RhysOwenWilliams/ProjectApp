@@ -34,9 +34,10 @@
             android:textColor="@color/colorSplash" />
 
         <ImageButton
+            android:id="@+id/messenger_leave_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_exit_to_app_black_24dp" />
     </LinearLayout>
 
@@ -95,7 +96,7 @@
         android:visibility="invisible">
 
         <EditText
-            android:id="@+id/comments_content"
+            android:id="@+id/messenger_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -106,11 +107,11 @@
             android:padding="10dp" />
 
         <ImageButton
-            android:id="@+id/comments_send"
+            android:id="@+id/messenger_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_send_primary_36dp" />
 
     </LinearLayout>

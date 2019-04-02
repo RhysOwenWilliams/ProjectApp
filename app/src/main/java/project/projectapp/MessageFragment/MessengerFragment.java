@@ -1,17 +1,22 @@
 package project.projectapp.MessageFragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,27 +43,30 @@ import project.projectapp.R;
 public class MessengerFragment extends Fragment {
 
     private Button checkCode;
-    private EditText enteredCode;
+    private EditText enteredCode, messageContent;
+    private ImageButton sendMessage, leaveChat;
     private LinearLayout isInRoom, notInRoom, customToolbar, addMessage;
     private ProgressBar progressBar;
     private TextView roomName;
 
     private Boolean inRoom, roomFound, checkRoom;
+    private String roomCode, dayTime, dayDate;
 
     private ArrayList<String> messageBody, messageDate, messageTime, messageSender, messageSenderId;
-    private Set<String> mBody;
 
-    private DataSnapshot whichRoom;
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference, databaseReferenceCode;
     private FirebaseAuth firebaseAuth;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.messenger_fragment, container, false);
+        final View view =  inflater.inflate(R.layout.messenger_fragment, container, false);
 
         checkCode = view.findViewById(R.id.messenger_check_code);
         enteredCode = view.findViewById(R.id.messenger_user_entered_code);
+        messageContent = view.findViewById(R.id.messenger_message);
+        sendMessage = view.findViewById(R.id.messenger_send);
+        leaveChat = view.findViewById(R.id.messenger_leave_chat);
         isInRoom = view.findViewById(R.id.messenger_is_in_room);
         notInRoom = view.findViewById(R.id.messenger_not_in_room);
         customToolbar = view.findViewById(R.id.messenger_toolbar_custom);
@@ -75,12 +84,35 @@ public class MessengerFragment extends Fragment {
         messageSender = new ArrayList<>();
         messageSenderId = new ArrayList<>();
 
-        mBody = new HashSet<>();
-
         firebaseAuth = FirebaseAuth.getInstance();
         authenticateUser(view);
 
+        sendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewMessage();
+            }
+        });
+
+        leaveChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeUserFromChat();
+            }
+        });
+
         return view;
+    }
+
+    private void removeUserFromChat() {
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Messenger")
+                .child(roomCode)
+                .child("userList")
+                .child(firebaseAuth.getCurrentUser().getUid());
+        databaseReference.removeValue();
+
+        refreshFragment();
     }
 
     private void authenticateUser(final View view) {
@@ -93,6 +125,9 @@ public class MessengerFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 DataSnapshot signedInId = dataSnapshot.child(firebaseAuth.getUid());
                 getChatRoom(signedInId.getKey().toString(), view);
+                if(signedInId.hasChild("isOfficial") || signedInId.hasChild("isTeam")){
+                    leaveChat.setVisibility(View.INVISIBLE);
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -114,14 +149,13 @@ public class MessengerFragment extends Fragment {
                                 if(checkRoom){
                                     if(users.getKey().equals(signedInUser)){
                                         userIsInAChatRoom(chatRooms, view);
-                                        whichRoom = chatRooms;
+                                        roomCode = chatRooms.getKey();
                                     }
                                 }
                             }
                         }
                     }
                 }
-                getMessages(whichRoom);
             }
 
             @Override
@@ -145,6 +179,9 @@ public class MessengerFragment extends Fragment {
     private void userNotInAChatRoom(){
         isInRoom.setVisibility(View.INVISIBLE);
         notInRoom.setVisibility(View.VISIBLE);
+        customToolbar.setVisibility(View.INVISIBLE);
+        addMessage.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
 
         checkCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,23 +193,26 @@ public class MessengerFragment extends Fragment {
     }
 
     private void checkIfValid(final String code) {
-        databaseReference = FirebaseDatabase.getInstance()
+        databaseReferenceCode = FirebaseDatabase.getInstance()
                 .getReference("Messenger");
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReferenceCode.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot chatRooms : dataSnapshot.getChildren()){
                     if(!roomFound){
                         if(chatRooms.getKey().equals(code)){
                             roomFound = true;
-                            getThisChatDetails(chatRooms);
-                        } else {
-                            enteredCode.setError("Invalid code");
-                            enteredCode.requestFocus();
-                            return;
+                            getThisChatDetails(chatRooms.getKey());
                         }
                     }
+                }
+
+                // If no room with matching code is found after checking all codes
+                if(!roomFound){
+                    enteredCode.setError("Invalid code");
+                    enteredCode.requestFocus();
+                    return;
                 }
             }
 
@@ -183,12 +223,23 @@ public class MessengerFragment extends Fragment {
         });
     }
 
-    private void getThisChatDetails(DataSnapshot chatRooms) {
-        for(DataSnapshot perChat : chatRooms.getChildren()){
-            if(perChat.getKey().equals("roomName")){
-                Toast.makeText(getActivity(), "Welcome to chat room for: " + perChat.getValue().toString(), Toast.LENGTH_SHORT).show();
-            }
-        }
+    private void getThisChatDetails(String chatRooms) {
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Messenger")
+                .child(chatRooms)
+                .child("userList");
+        databaseReference.child(firebaseAuth.getCurrentUser().getUid())
+                .setValue(firebaseAuth.getCurrentUser().getDisplayName());
+
+        refreshFragment();
+    }
+
+    private void clearMessageArrays(){
+        messageBody.clear();
+        messageTime.clear();
+        messageDate.clear();
+        messageSender.clear();
+        messageSenderId.clear();
     }
 
     private void userIsInAChatRoom(DataSnapshot chatRoom, final View view){
@@ -201,9 +252,31 @@ public class MessengerFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                clearMessageArrays();
                 for(DataSnapshot chatRoomDetails : dataSnapshot.getChildren()){
                     if(chatRoomDetails.getKey().equals("roomName")){
                         roomName.setText(chatRoomDetails.getValue().toString());
+                    }
+                    if(chatRoomDetails.getKey().equals("messages")){
+                        for(DataSnapshot message : chatRoomDetails.getChildren()){
+                            for(DataSnapshot messageDetails : message.getChildren()){
+                                if(messageDetails.getKey().equals("body")){
+                                    messageBody.add(messageDetails.getValue().toString());
+                                }
+                                if(messageDetails.getKey().equals("date")){
+                                    messageDate.add(messageDetails.getValue().toString());
+                                }
+                                if(messageDetails.getKey().equals("time")){
+                                    messageTime.add(messageDetails.getValue().toString());
+                                }
+                                if(messageDetails.getKey().equals("user")){
+                                    messageSender.add(messageDetails.getValue().toString());
+                                }
+                                if(messageDetails.getKey().equals("userId")){
+                                    messageSenderId.add(messageDetails.getValue().toString());
+                                }
+                            }
+                        }
                     }
                 }
                 recyclerViewSetup(view);
@@ -216,55 +289,57 @@ public class MessengerFragment extends Fragment {
         });
     }
 
-    //TODO: bug here, when messenger fragment is reloaded, data is lost
-    private void getMessages(DataSnapshot chatRoom){
+    private void addNewMessage() {
+        getDateTime();
+
+        String messageBody = messageContent.getText().toString();
+        String messageSender = firebaseAuth.getCurrentUser().getDisplayName();
+        String messageSenderId = firebaseAuth.getCurrentUser().getUid();
+
+        if(TextUtils.isEmpty(messageBody)){
+            messageContent.setError("Your message can not be empty");
+            messageContent.requestFocus();
+            return;
+        }
+
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Messenger")
-                .child(chatRoom.getKey())
+                .child(roomCode)
                 .child("messages");
 
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                for(DataSnapshot messageDetails : dataSnapshot.getChildren()){
-                    if(messageDetails.getKey().equals("body")){
-                        messageBody.add(messageDetails.getValue().toString());
-                    }
-                    if(messageDetails.getKey().equals("date")){
-                        messageDate.add(messageDetails.getValue().toString());
-                    }
-                    if(messageDetails.getKey().equals("time")){
-                        messageTime.add(messageDetails.getValue().toString());
-                    }
-                    if(messageDetails.getKey().equals("user")){
-                        messageSender.add(messageDetails.getValue().toString());
-                    }
-                    if(messageDetails.getKey().equals("userId")){
-                        messageSenderId.add(messageDetails.getValue().toString());
-                    }
-                }
-            }
+        String messageId = databaseReference.push().getKey();
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        Message message = new Message(messageBody, dayTime, dayDate, messageSender, messageSenderId);
 
-            }
+        databaseReference.child(messageId).setValue(message);
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+        messageContent.onEditorAction(EditorInfo.IME_ACTION_DONE);
+        messageContent.setText("");
+    }
 
-            }
+    /**
+     * Retrieves a long string containing the current date, time and year, then splits this data
+     * up into separate strings
+     */
+    private void getDateTime() {
+        String todayDateTime = String.valueOf(Calendar.getInstance().getTime());
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        // Calendar.getInstance().getTime() returns a long string of various data for today, split and access what we need
+        String[] splitTime = todayDateTime.split(" ");
 
-            }
+        dayDate = splitTime[1] + " " + splitTime[2] + " " + splitTime[5]; // Month, Day, Year
+        dayTime = splitTime[3];
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+    private void refreshFragment(){
+        inRoom = false;
+        roomFound = false;
+        checkRoom = false;
 
-            }
-        });
+        getFragmentManager().beginTransaction()
+                .detach(this)
+                .attach(this)
+                .commit();
     }
 
     private void recyclerViewSetup(View view){
@@ -273,6 +348,7 @@ public class MessengerFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.scrollToPosition(adapter.getItemCount()-1); //Start at bottom
 
         customToolbar.setVisibility(View.VISIBLE);
         addMessage.setVisibility(View.VISIBLE);

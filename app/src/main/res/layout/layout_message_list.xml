@@ -24,7 +24,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
             android:orientation="vertical">
 
             <TextView
@@ -40,7 +41,6 @@
                 android:id="@+id/message_list_not_user_body"
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
                 android:background="@drawable/round_edges"
                 android:padding="10dp"
                 android:text="text message" />
@@ -107,8 +107,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
             android:gravity="right"
+            android:layout_marginRight="3dp"
+            android:layout_marginLeft="3dp"
             android:orientation="vertical">
 
             <TextView
@@ -123,7 +124,6 @@
                 android:id="@+id/message_list_user_body"
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
                 android:background="@drawable/round_edges_user"
                 android:padding="10dp"
                 android:text="text message" />
